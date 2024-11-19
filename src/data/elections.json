@@ -1,0 +1,65 @@
+{
+      "upcomingElections": [
+        {
+          "id": "dz-2024",
+          "country": "Algérie",
+          "type": "Présidentielle",
+          "date": "2024-04-15",
+          "status": "À venir",
+          "candidates": 5,
+          "observingOrgs": 3
+        },
+        {
+          "id": "ma-2024",
+          "country": "Maroc",
+          "type": "Législative",
+          "date": "2024-09-20",
+          "status": "En préparation",
+          "candidates": 12,
+          "observingOrgs": 4
+        },
+        {
+          "id": "ke-2024",
+          "country": "Kenya",
+          "type": "Locales",
+          "date": "2024-08-05",
+          "status": "Planification",
+          "candidates": 8,
+          "observingOrgs": 2
+        }
+      ],
+      "recentElections": [
+        {
+          "id": "ng-2023",
+          "country": "Nigeria",
+          "type": "Présidentielle",
+          "date": "2023-02-25",
+          "turnout": 27.5,
+          "winner": "Bola Tinubu",
+          "challenges": true
+        },
+        {
+          "id": "tz-2023",
+          "country": "Tanzanie",
+          "type": "Présidentielle",
+          "date": "2023-10-15",
+          "turnout": 49.6,
+          "winner": "Samia Suluhu Hassan",
+          "challenges": false
+        }
+      ],
+      "electoralChallenges": [
+        {
+          "country": "Nigeria",
+          "type": "Contestation Judiciaire",
+          "description": "Recours contre les résultats de l'élection présidentielle",
+          "status": "En cours"
+        },
+        {
+          "country": "RDC",
+          "type": "Tensions Politiques",
+          "description": "Désaccords sur le processus électoral",
+          "status": "Critique"
+        }
+      ]
+    }

@@ -1,0 +1,61 @@
+---
+    const currentYear = new Date().getFullYear();
+    const socialLinks = [
+      { 
+        name: 'Twitter', 
+        url: 'https://twitter.com/africaelections', 
+        icon: '/icons/twitter.svg' 
+      },
+      { 
+        name: 'LinkedIn', 
+        url: 'https://linkedin.com/company/africaelections', 
+        icon: '/icons/linkedin.svg' 
+      }
+    ];
+    ---
+
+    <footer class="bg-africa-dark text-white py-8">
+      <div class="container mx-auto px-4 grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="font-bold mb-4">À Propos</h3>
+          <p class="text-sm">
+            Plateforme de référence pour le suivi et l'analyse des processus électoraux en Afrique.
+          </p>
+        </div>
+        
+        <div>
+          <h3 class="font-bold mb-4">Liens Rapides</h3>
+          <ul class="space-y-2">
+            <li><a href="/legal" class="hover:text-africa-accent">Mentions Légales</a></li>
+            <li><a href="/privacy" class="hover:text-africa-accent">Politique de Confidentialité</a></li>
+            <li><a href="/contact" class="hover:text-africa-accent">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="font-bold mb-4">Suivez-nous</h3>
+          <div class="flex space-x-4">
+            {socialLinks.map(link => (
+              <a 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="hover:opacity-75"
+              >
+                <img 
+                  src={link.icon} 
+                  alt={link.name} 
+                  class="h-6 w-6"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8 border-t border-gray-700 pt-4">
+        <p class="text-sm">
+          © {currentYear} Africa Elections. Tous droits réservés.
+        </p>
+      </div>
+    </footer>

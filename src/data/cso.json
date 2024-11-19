@@ -1,0 +1,18 @@
+{
+      "organizations": [
+        {
+          "name": "Observatoire National des Élections (ONEC)",
+          "country": "DZ",
+          "type": "Observation Électorale",
+          "website": "https://www.onec.dz",
+          "focus": ["Transparence", "Intégrité Électorale"]
+        },
+        {
+          "name": "Association Marocaine pour la Transparence Démocratique",
+          "country": "MA", 
+          "type": "Monitoring Électoral",
+          "website": "https://www.amtd.ma",
+          "focus": ["Observation", "Éducation Civique"]
+        }
+      ]
+    }

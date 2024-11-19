@@ -1,0 +1,132 @@
+---
+import Icon from 'astro-icon';
+
+interface Props {
+  activePage?: string;
+}
+
+const { activePage = 'home' } = Astro.props;
+
+const menuItems = [
+  { href: '/', label: 'Accueil', slug: 'home' },
+  { href: '/countries', label: 'Pays', slug: 'countries' },
+  { href: '/cso', label: 'Organisations', slug: 'cso' },
+  { href: '/elections', label: 'Élections', slug: 'elections' },
+  { href: '/about', label: 'À Propos', slug: 'about' }
+];
+---
+
+<script>
+  const toggleMenu = () => {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const isHidden = mobileMenu?.classList.contains('translate-x-full');
+    
+    if (isHidden) {
+      mobileMenu?.classList.remove('translate-x-full', 'opacity-0');
+      mobileMenu?.classList.add('translate-x-0', 'opacity-100');
+      document.body.style.overflow = 'hidden';
+      mobileMenuButton?.setAttribute('aria-expanded', 'true');
+    } else {
+      mobileMenu?.classList.add('translate-x-full', 'opacity-0');
+      mobileMenu?.classList.remove('translate-x-0', 'opacity-100');
+      document.body.style.overflow = '';
+      mobileMenuButton?.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  document.getElementById('mobile-menu-button')?.addEventListener('click', toggleMenu);
+  
+  document.addEventListener('click', (e) => {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuButton = document.getElementById('mobile-menu-button');
+    if (!mobileMenu?.contains(e.target as Node) && !menuButton?.contains(e.target as Node)) {
+      mobileMenu?.classList.add('translate-x-full', 'opacity-0');
+      mobileMenu?.classList.remove('translate-x-0', 'opacity-100');
+      document.body.style.overflow = '';
+      menuButton?.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<header class="bg-africa-primary text-white py-4 fixed w-full top-0 z-50">
+  <div class="container mx-auto flex justify-between items-center px-4">
+    <div class="flex items-center">
+      <img src="/logo.svg" alt="Africa Elections Logo" class="h-8 sm:h-10 mr-2 sm:mr-4"/>
+      <a href="/" class="text-xl sm:text-2xl font-bold hover:text-africa-dark transition-colors">Africa Elections</a>
+    </div>
+    
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:block">
+      <ul class="flex space-x-6">
+        {menuItems.map(item => (
+          <li>
+            <a 
+              href={item.href}
+              class={`
+                ${activePage === item.slug 
+                  ? 'text-africa-dark font-bold' 
+                  : 'text-white hover:text-africa-dark'}
+                transition-colors duration-300
+              `}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button 
+      id="mobile-menu-button"
+      class="md:hidden p-2 rounded-lg hover:bg-africa-secondary focus:outline-none focus:ring-2 focus:ring-africa-accent transition-colors duration-300"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div 
+    id="mobile-menu" 
+    class="fixed inset-y-0 right-0 w-64 bg-africa-primary transform translate-x-full opacity-0 transition-all duration-300 ease-in-out md:hidden shadow-lg"
+  >
+    <nav class="h-full flex flex-col">
+      <div class="p-4 border-b border-africa-secondary">
+        <button 
+          onclick="toggleMenu()"
+          class="ml-auto block p-2 rounded-lg hover:bg-africa-secondary focus:outline-none focus:ring-2 focus:ring-africa-accent transition-colors duration-300"
+          aria-label="Close menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <ul class="flex-1 overflow-y-auto">
+        {menuItems.map(item => (
+          <li>
+            <a 
+              href={item.href}
+              class={`
+                block py-3 px-6 border-b border-africa-secondary
+                ${activePage === item.slug 
+                  ? 'bg-africa-secondary text-africa-accent font-bold' 
+                  : 'text-white hover:bg-africa-secondary'}
+                transition-all duration-300
+              `}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="h-16 md:h-0"><!-- Spacer for fixed header --></div>

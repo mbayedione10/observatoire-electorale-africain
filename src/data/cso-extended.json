@@ -1,0 +1,80 @@
+{
+      "organizations": [
+        {
+          "id": "obs-dz-001",
+          "name": "Observatoire National des Élections (ONEC)",
+          "country": "Algérie",
+          "expertise": [
+            "Observation Électorale", 
+            "Transparence", 
+            "Formation Civique"
+          ],
+          "interventionPeriod": {
+            "start": "2010-01-01",
+            "end": null
+          },
+          "contacts": {
+            "email": "contact@onec.dz",
+            "phone": "+213 21 XX XX XX",
+            "address": "Alger, Algérie"
+          },
+          "initiatives": [
+            {
+              "title": "Programme de Formation Électorale",
+              "description": "Formation des observateurs électoraux",
+              "year": 2019,
+              "impact": "Formation de 500 observateurs"
+            },
+            {
+              "title": "Rapport de Transparence Électorale",
+              "description": "Analyse des processus électoraux",
+              "year": 2021,
+              "impact": "Publication d'un rapport détaillé"
+            }
+          ],
+          "partners": [
+            "Union Africaine",
+            "PNUD",
+            "Université d'Alger"
+          ]
+        },
+        {
+          "id": "obs-ma-001",
+          "name": "Centre Marocain pour l'Observation Électorale",
+          "country": "Maroc",
+          "expertise": [
+            "Monitoring Électoral", 
+            "Analyse Politique", 
+            "Éducation Civique"
+          ],
+          "interventionPeriod": {
+            "start": "2012-01-01",
+            "end": null
+          },
+          "contacts": {
+            "email": "contact@cmoe.ma",
+            "phone": "+212 53 XX XX XX",
+            "address": "Rabat, Maroc"
+          },
+          "initiatives": [
+            {
+              "title": "Programme de Sensibilisation Civique",
+              "description": "Sensibilisation des jeunes à la participation électorale",
+              "year": 2020,
+              "impact": "Atteint 10 000 jeunes"
+            },
+            {
+              "title": "Plateforme de Suivi Électoral",
+              "description": "Plateforme numérique de monitoring",
+              "year": 2022,
+              "impact": "Plus de 50 000 utilisateurs"
+            }
+          ],
+          "partners": [
+            "Union Européenne",
+            "Conseil National des Droits de l'Homme",
+            "Universités Marocaines"
+          ]
+        }
+      ]
+    }

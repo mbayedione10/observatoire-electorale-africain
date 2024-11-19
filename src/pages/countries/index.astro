@@ -1,0 +1,28 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.tsx';
+import CountryList from '../../components/CountryList.tsx';
+import countriesData from '../../data/countries-extended.json';
+
+const countries = countriesData.countries;
+---
+
+<MainLayout 
+  title="Liste des Pays" 
+  activePage="countries"
+>
+
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold mb-6 text-africa-dark">
+      Pays Africains
+    </h1>
+
+    <div class="mb-8">
+      <p class="text-gray-600">
+        Découvrez les informations électorales détaillées pour {countries.length} pays africains.
+      </p>
+    </div>
+
+    <CountryList countries={countries} client:load />
+  </div>
+</MainLayout>

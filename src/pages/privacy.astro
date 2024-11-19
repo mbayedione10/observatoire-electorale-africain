@@ -1,0 +1,50 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.tsx';
+---
+
+<MainLayout title="Politique de confidentialité">
+  <main class="flex-grow container-narrow py-8">
+    <Breadcrumbs 
+      items={[
+        { label: 'Accueil', href: '/' },
+        { label: 'Politique de Confidentialité', href: '#' }
+      ]} 
+    />
+    <div class="section-spacing">
+      <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-6 sm:p-8">
+        <h1 class="text-3xl font-bold text-africa-primary mb-8">Politique de confidentialité</h1>
+        
+        <div class="stack-lg">
+          <section>
+            <h2 class="text-2xl font-semibold text-africa-primary mb-4">1. Collecte des données</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Nous collectons uniquement les données nécessaires au bon fonctionnement du site et à l'amélioration de nos services. Aucune donnée personnelle n'est collectée sans votre consentement explicite.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-2xl font-semibold text-africa-primary mb-4">2. Utilisation des cookies</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Notre site utilise des cookies techniques essentiels au fonctionnement du site. Ces cookies ne collectent pas d'informations personnelles.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-2xl font-semibold text-africa-primary mb-4">3. Protection des données</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Nous mettons en œuvre toutes les mesures techniques et organisationnelles nécessaires pour assurer la sécurité de vos données.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-2xl font-semibold text-africa-primary mb-4">4. Vos droits</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Conformément aux lois sur la protection des données, vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</MainLayout>

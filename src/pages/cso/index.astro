@@ -1,0 +1,65 @@
+---
+    import MainLayout from '../../layouts/MainLayout.astro';
+    import Icon from '../../components/common/Icon';
+    import csoData from '../../data/cso-extended.json';
+
+    const organizations = csoData.organizations.map(org => ({
+      id: org.id,
+      name: org.name,
+      country: org.country,
+      expertise: org.expertise,
+      contacts: org.contacts
+    }));
+    ---
+
+    <MainLayout title="Organisations de la Société Civile" activePage="cso">
+      <div class="container mx-auto px-4 py-12">
+        <h1 class="text-4xl font-bold mb-8 text-africa-dark text-center">
+          Organisations de la Société Civile
+        </h1>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          {organizations.map(org => (
+            <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+              <div class="flex items-center mb-4">
+                <Icon name="users" className="text-4xl text-africa-accent mr-4" client:load />
+                <div>
+                  <h2 class="text-xl font-semibold text-[#2C3E50]">
+                    {org.name}
+                  </h2>
+                  <p class="text-africa-accent">{org.country}</p>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h3 class="font-semibold mb-2 text-[#3498DB]">
+                  Domaines d'Expertise
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                  {org.expertise.map(exp => (
+                    <span class="bg-africa-warm/10 text-africa-warm px-2 py-1 rounded-full text-sm">
+                      {exp}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="space-y-2 text-gray-600">
+                <div class="flex items-center">
+                  <Icon name="email" className="mr-2 text-africa-accent" client:load />
+                  <span>{org.contacts.email}</span>
+                </div>
+                <div class="flex items-center">
+                  <Icon name="phone" className="mr-2 text-africa-accent" client:load />
+                  <span>{org.contacts.phone}</span>
+                </div>
+                <div class="flex items-center">
+                  <Icon name="map" className="mr-2 text-africa-accent" client:load />
+                  <span>{org.contacts.address}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </MainLayout>

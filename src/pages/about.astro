@@ -1,0 +1,88 @@
+---
+    import MainLayout from '../layouts/MainLayout.astro';
+    import { FaGlobe, FaBalanceScale, FaUsers, FaChartLine } from 'react-icons/fa';
+
+    const missionDetails = [
+      {
+        title: "Centralisation des Informations",
+        description: "Créer un référentiel unique et exhaustif des processus électoraux africains, facilitant l'accès à des informations précises et actualisées.",
+        icon: FaGlobe
+      },
+      {
+        title: "Transparence et Intégrité",
+        description: "Promouvoir la transparence des processus électoraux en fournissant un accès ouvert aux cadres juridiques, aux résultats et aux analyses.",
+        icon: FaBalanceScale
+      },
+      {
+        title: "Renforcement de la Société Civile",
+        description: "Créer un réseau dynamique d'organisations de la société civile travaillant ensemble pour renforcer les processus démocratiques.",
+        icon: FaUsers
+      },
+      {
+        title: "Veille et Analyse",
+        description: "Développer un système de monitoring en temps réel pour suivre, analyser et alerter sur les enjeux électoraux à travers le continent.",
+        icon: FaChartLine
+      }
+    ];
+    ---
+
+    <MainLayout title="À Propos - Africa Elections" activePage="about">
+      <div class="container mx-auto px-4 py-16">
+        <section class="text-center mb-16">
+          <h1 class="text-4xl font-bold mb-6 text-africa-dark">
+            Notre Mission
+          </h1>
+          <p class="text-xl max-w-4xl mx-auto text-gray-700">
+            Africa Elections est une initiative collaborative visant à renforcer la transparence, 
+            l'intégrité et la participation démocratique à travers le continent africain. 
+            Nous croyons en la force de l'information ouverte et du réseau pour promouvoir 
+            des élections libres, justes et crédibles.
+          </p>
+        </section>
+
+        <section class="grid md:grid-cols-2 gap-8 mb-16">
+          {missionDetails.map(detail => (
+            <div class="bg-white shadow-md rounded-lg p-6 flex items-start">
+              <detail.icon class="text-4xl text-africa-accent mr-6 mt-2" />
+              <div>
+                <h3 class="text-2xl font-semibold mb-4 text-africa-primary">
+                  {detail.title}
+                </h3>
+                <p class="text-gray-700">
+                  {detail.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section class="text-center">
+          <h2 class="text-3xl font-bold mb-8 text-africa-dark">
+            Notre Approche
+          </h2>
+          <div class="max-w-4xl mx-auto space-y-6">
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4 text-africa-secondary">
+                Collaboration Panafricaine
+              </h3>
+              <p class="text-gray-700">
+                Nous travaillons en étroite collaboration avec des organisations 
+                de la société civile, des institutions électorales et des 
+                observateurs internationaux pour créer un écosystème d'information 
+                transparent et fiable.
+              </p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4 text-africa-secondary">
+                Technologie et Innovation
+              </h3>
+              <p class="text-gray-700">
+                En utilisant les dernières technologies web et des méthodes 
+                d'analyse de données avancées, nous rendons l'information 
+                électorale accessible, compréhensible et exploitable.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </MainLayout>

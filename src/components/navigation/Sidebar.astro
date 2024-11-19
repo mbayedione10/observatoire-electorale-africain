@@ -1,0 +1,146 @@
+---
+const filterSections = [
+  {
+    title: 'Régions',
+    items: [
+      'Afrique du Nord',
+      'Afrique de l\'Ouest',
+      'Afrique Centrale',
+      'Afrique de l\'Est',
+      'Afrique Australe'
+    ]
+  },
+  {
+    title: 'Type d\'Élection',
+    items: [
+      'Présidentielle',
+      'Législative',
+      'Municipale',
+      'Référendum'
+    ]
+  },
+  {
+    title: 'Statut',
+    items: [
+      'Prochaine Élection',
+      'Élection Récente',
+      'En Cours de Préparation'
+    ]
+  }
+];
+---
+
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+<aside id="sidebar" class="fixed inset-y-0 left-0 md:w-64 bg-gray-100 p-4 transform translate-x-0 transition-transform duration-300 ease-in-out z-50 md:sticky md:top-16">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold text-africa-primary">Filtres</h2>
+    <button 
+      id="toggle-filters"
+      class="md:hidden p-2 rounded-lg bg-africa-primary text-white hover:bg-africa-secondary focus:outline-none focus:ring-2 focus:ring-africa-accent"
+      aria-label="Toggle filters"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </button>
+  </div>
+  
+  <div id="filter-content" class="overflow-y-auto max-h-[calc(100vh-6rem)]">
+    {filterSections.map((section, index) => (
+      <div class="filter-section mb-6" data-section-id={index}>
+        <button 
+          class="filter-section-header w-full flex justify-between items-center font-bold mb-2 text-africa-secondary sticky top-0 bg-gray-100 py-2 hover:bg-gray-200 rounded-lg px-2 transition-colors"
+          aria-expanded="false"
+          aria-controls={`section-${index}`}
+        >
+          <h3>{section.title}</h3>
+          <svg 
+            class="w-5 h-5 transform transition-transform duration-200 rotate-180" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div 
+          id={`section-${index}`}
+          class="filter-section-content space-y-2 transition-all duration-300 ease-in-out"
+          style="max-height: 0; opacity: 0; overflow: hidden;"
+        >
+          <ul>
+            {section.items.map(item => (
+              <li class="w-full">
+                <label class="flex items-center hover:bg-gray-200 p-2 rounded-lg transition-colors cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    class="form-checkbox text-africa-accent rounded"
+                  />
+                  <span class="ml-2 text-gray-700 whitespace-nowrap">{item}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </div>
+</aside>
+
+<script>
+  const toggleFilters = () => {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (sidebar?.classList.contains('-translate-x-full')) {
+      sidebar.classList.remove('-translate-x-full');
+      overlay?.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    } else {
+      sidebar?.classList.add('-translate-x-full');
+      overlay?.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  };
+
+  const toggleSection = (header: HTMLElement) => {
+    const section = header.closest('.filter-section');
+    const content = section?.querySelector('.filter-section-content') as HTMLElement;
+    const arrow = header.querySelector('svg');
+    
+    if (!content || !arrow) return;
+    
+    const isExpanded = content.classList.contains('expanded');
+    
+    if (isExpanded) {
+      content.style.maxHeight = '0px';
+      content.classList.remove('expanded');
+      arrow.classList.add('rotate-180');
+      header.setAttribute('aria-expanded', 'false');
+    } else {
+      content.style.maxHeight = content.scrollHeight + 'px';
+      content.classList.add('expanded');
+      arrow.classList.remove('rotate-180');
+      header.setAttribute('aria-expanded', 'true');
+    }
+  };
+
+  // Initialize collapsible sections
+  document.querySelectorAll('.filter-section-header').forEach((header) => {
+    const content = header.closest('.filter-section')?.querySelector('.filter-section-content') as HTMLElement;
+    const arrow = header.querySelector('svg');
+    
+    if (content && arrow) {
+      // Start collapsed
+      content.style.maxHeight = '0px';
+      arrow.classList.add('rotate-180');
+      header.setAttribute('aria-expanded', 'false');
+    }
+    
+    header.addEventListener('click', () => toggleSection(header as HTMLElement));
+  });
+
+  document.getElementById('toggle-filters')?.addEventListener('click', toggleFilters);
+  document.getElementById('sidebar-overlay')?.addEventListener('click', toggleFilters);
+</script>

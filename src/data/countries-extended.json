@@ -1,0 +1,144 @@
+{
+  "countries": [
+    {
+      "code": "DZ",
+      "name": "Algérie",
+      "population": 44700000,
+      "politicalSystem": "République Présidentielle",
+      "lastElection": {
+        "type": "Présidentielle",
+        "year": 2019,
+        "turnout": 49.6,
+        "nextElectionYear": 2024
+      },
+      "demographics": {
+        "ageGroups": [
+          { "group": "0-14", "percentage": 25.3 },
+          { "group": "15-24", "percentage": 16.5 },
+          { "group": "25-54", "percentage": 42.2 },
+          { "group": "55+", "percentage": 16 }
+        ],
+        "gender": {
+          "male": 50.5,
+          "female": 49.5
+        },
+        "voterRegistration": {
+          "registered": 23000000,
+          "eligible": 28000000
+        }
+      }
+    },
+    {
+      "code": "MA",
+      "name": "Maroc",
+      "population": 37457000,
+      "politicalSystem": "Monarchie Constitutionnelle",
+      "lastElection": {
+        "type": "Législatives",
+        "year": 2021,
+        "turnout": 50.35,
+        "nextElectionYear": 2026
+      },
+      "demographics": {
+        "ageGroups": [
+          { "group": "0-14", "percentage": 26.7 },
+          { "group": "15-24", "percentage": 16.4 },
+          { "group": "25-54", "percentage": 41.9 },
+          { "group": "55+", "percentage": 15 }
+        ],
+        "gender": {
+          "male": 49.8,
+          "female": 50.2
+        },
+        "voterRegistration": {
+          "registered": 17509127,
+          "eligible": 25200000
+        }
+      }
+    },
+    {
+      "code": "SN",
+      "name": "Sénégal",
+      "population": 16744000,
+      "politicalSystem": "République Démocratique",
+      "lastElection": {
+        "type": "Présidentielle",
+        "year": 2024,
+        "turnout": 62.8,
+        "nextElectionYear": 2029
+      },
+      "demographics": {
+        "ageGroups": [
+          { "group": "0-14", "percentage": 41.2 },
+          { "group": "15-24", "percentage": 20.1 },
+          { "group": "25-54", "percentage": 31.8 },
+          { "group": "55+", "percentage": 6.9 }
+        ],
+        "gender": {
+          "male": 48.2,
+          "female": 51.8
+        },
+        "voterRegistration": {
+          "registered": 7315000,
+          "eligible": 8900000
+        }
+      }
+    },
+    {
+      "code": "KE",
+      "name": "Kenya",
+      "population": 54985000,
+      "politicalSystem": "République Présidentielle",
+      "lastElection": {
+        "type": "Présidentielle",
+        "year": 2022,
+        "turnout": 64.6,
+        "nextElectionYear": 2027
+      },
+      "demographics": {
+        "ageGroups": [
+          { "group": "0-14", "percentage": 38.7 },
+          { "group": "15-24", "percentage": 20.2 },
+          { "group": "25-54", "percentage": 34.8 },
+          { "group": "55+", "percentage": 6.3 }
+        ],
+        "gender": {
+          "male": 49.7,
+          "female": 50.3
+        },
+        "voterRegistration": {
+          "registered": 22120458,
+          "eligible": 27000000
+        }
+      }
+    },
+    {
+      "code": "ZA",
+      "name": "Afrique du Sud",
+      "population": 60600000,
+      "politicalSystem": "République Parlementaire",
+      "lastElection": {
+        "type": "Législatives",
+        "year": 2024,
+        "turnout": 70.1,
+        "nextElectionYear": 2029
+      },
+      "demographics": {
+        "ageGroups": [
+          { "group": "0-14", "percentage": 28.3 },
+          { "group": "15-24", "percentage": 17.3 },
+          { "group": "25-54", "percentage": 42.4 },
+          { "group": "55+", "percentage": 12 }
+        ],
+        "gender": {
+          "male": 48.7,
+          "female": 51.3
+        },
+        "voterRegistration": {
+          "registered": 26200000,
+          "eligible": 35000000
+        }
+      }
+    }
+  ]
+}

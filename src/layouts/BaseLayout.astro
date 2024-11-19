@@ -1,0 +1,78 @@
+---
+import '../styles/theme.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description || "Portail des élections africaines"} />
+    <title>{title} | Elections Africa</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-screen flex flex-col bg-gray-50">
+    <header class="bg-[#2C3E50] text-white shadow-md">
+      <nav class="container-narrow py-6">
+        <div class="flex items-center justify-between">
+          <a href="/" class="flex items-center space-x-3 text-white hover:text-white/90 transition-colors duration-200">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 19H22L12 2Z" fill="currentColor"/>
+            </svg>
+            <span class="text-2xl font-bold">Elections Africa</span>
+          </a>
+          <div class="hidden md:flex items-center space-x-8">
+            <a href="/countries" class="text-white/90 hover:text-white transition-colors duration-200">Pays</a>
+            <a href="/organizations" class="text-white/90 hover:text-white transition-colors duration-200">Organisations</a>
+            <a href="/elections" class="text-white/90 hover:text-white transition-colors duration-200">Élections</a>
+            <a href="/about" class="text-white/90 hover:text-white transition-colors duration-200">À Propos</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow container-narrow py-8">
+      <slot />
+    </main>
+
+    <footer class="bg-[#2C3E50] text-white/90">
+      <div class="container-narrow py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">À propos</h3>
+            <p class="text-white/80">
+              Plateforme de suivi des élections en Afrique, fournissant des informations détaillées sur les processus électoraux.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">Liens rapides</h3>
+            <ul class="space-y-2">
+              <li><a href="/countries" class="text-white/80 hover:text-white transition-colors duration-200">Pays</a></li>
+              <li><a href="/organizations" class="text-white/80 hover:text-white transition-colors duration-200">Organisations</a></li>
+              <li><a href="/elections" class="text-white/80 hover:text-white transition-colors duration-200">Élections</a></li>
+              <li><a href="/about" class="text-white/80 hover:text-white transition-colors duration-200">À Propos</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">Informations légales</h3>
+            <ul class="space-y-2">
+              <li><a href="/legal" class="text-white/80 hover:text-white transition-colors duration-200">Mentions légales</a></li>
+              <li><a href="/privacy" class="text-white/80 hover:text-white transition-colors duration-200">Politique de confidentialité</a></li>
+              <li><a href="/contact" class="text-white/80 hover:text-white transition-colors duration-200">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-white/10 text-center text-white/70">
+          <p>&copy; {new Date().getFullYear()} Elections Africa. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

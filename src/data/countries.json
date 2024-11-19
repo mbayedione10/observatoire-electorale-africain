@@ -1,0 +1,30 @@
+{
+      "countries": [
+        {
+          "code": "DZ",
+          "name": "Algérie",
+          "lastElection": {
+            "type": "Présidentielle",
+            "year": 2019,
+            "nextElectionYear": 2024
+          },
+          "electoralFramework": {
+            "constitution": "1996 (modifiée en 2020)",
+            "electoralCode": "Loi organique n°16-10"
+          }
+        },
+        {
+          "code": "MA",
+          "name": "Maroc",
+          "lastElection": {
+            "type": "Législatives",
+            "year": 2021,
+            "nextElectionYear": 2026
+          },
+          "electoralFramework": {
+            "constitution": "2011",
+            "electoralCode": "Loi n°59-11"
+          }
+        }
+      ]
+    }

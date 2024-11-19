@@ -1,0 +1,61 @@
+---
+    import MainLayout from '../../layouts/MainLayout.astro';
+    import ElectionCard from '../../components/elections/ElectionCard.tsx';
+    import ElectionFilter from '../../components/elections/ElectionFilter.tsx';
+    import ElectionChallengesWidget from '../../components/elections/ElectionChallengesWidget.tsx';
+    import electionsData from '../../data/elections.json';
+    ---
+
+    <MainLayout title="Élections en Afrique" activePage="elections">
+      <div class="flex">
+        <div class="w-64 mr-6">
+          <ElectionFilter 
+            client:load 
+            onFilterChange={(filters) => {
+              // TODO: Implement filtering logic
+              console.log(filters);
+            }} 
+          />
+        </div>
+        
+        <div class="flex-grow">
+          <div class="mb-12">
+            <h1 class="text-3xl font-bold mb-8 text-africa-primary">
+              Élections à Venir
+            </h1>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+              {electionsData.upcomingElections.map(election => (
+                <ElectionCard 
+                  client:visible 
+                  election={election}
+                  variant="upcoming"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div class="mb-12">
+            <h1 class="text-3xl font-bold mb-8 text-africa-primary">
+              Élections Récentes
+            </h1>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+              {electionsData.recentElections.map(election => (
+                <ElectionCard 
+                  client:visible 
+                  election={election}
+                  variant="recent"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <ElectionChallengesWidget 
+              challenges={electionsData.electoralChallenges}
+            />
+          </div>
+        </div>
+      </div>
+    </MainLayout>
