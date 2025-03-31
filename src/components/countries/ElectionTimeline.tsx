@@ -1,16 +1,14 @@
 import React from 'react';
 import { FaVoteYea, FaCalendarAlt, FaCheckCircle, FaClock } from 'react-icons/fa';
 
-interface ElectionEvent {
-  date: string;
-  type: string;
-  status: 'completed' | 'upcoming' | 'ongoing';
-  turnout?: number;
-  description?: string;
-}
-
 interface ElectionTimelineProps {
-  events: ElectionEvent[];
+  events: {
+    date: string;
+    type: string;
+    status: 'completed' | 'upcoming' | 'ongoing';
+    turnout?: number;
+    description: string;
+  }[];
   countryName: string;
 }
 
