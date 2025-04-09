@@ -6,15 +6,17 @@ import CountrySidebar from '../../components/countries/CountrySidebar';
 import AfricaMap from '../../components/countries/AfricaMap';
 import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from 'react-icons/fa';
 
-// Importer les données des pays
-import { countries } from '../../data/countries-extended.json';
+import { getCollection } from 'astro:content';
+
+// Récupérer les données des pays
+const pays = await getCollection('pays');
 
 // Statistiques globales
-const totalPopulation = countries.reduce((sum, country) => sum + country.population, 0);
-const avgTurnout = countries.reduce((sum, country) => sum + (country.lastElection?.turnout || 0), 0) / countries.length;
-const upcomingElections = countries.filter(country => 
-  country.lastElection?.nextElectionYear && 
-  country.lastElection.nextElectionYear <= new Date().getFullYear() + 1
+const totalPopulation = pays.reduce((sum, country) => sum + country.data.population, 0);
+const avgTurnout = pays.reduce((sum, country) => sum + (country.data.lastElection?.turnout || 0), 0) / pays.length;
+const upcomingElections = pays.filter(country => 
+  country.data.lastElection?.nextElectionYear && 
+  country.data.lastElection.nextElectionYear <= new Date().getFullYear() + 1
 ).length;
 
 // Regrouper les pays par région pour les statistiques
@@ -33,7 +35,11 @@ const countriesByRegion = regions.map(region => {
 });
 
 // Sélectionner quelques pays en vedette
-const featuredCountries = countries.slice(0, 3);
+const featuredCountries = pays.slice(0, 3).map(country => ({
+  code: country.data.code,
+  name: country.data.name,
+  lastElection: country.data.lastElection
+}));
 ---
 
 <Layout title="Pays | Observatoire des Élections en Afrique">
@@ -48,7 +54,7 @@ const featuredCountries = countries.slice(0, 3);
           <div class="flex justify-center mb-3">
             <FaGlobeAfrica className="text-farafina-primary text-3xl" />
           </div>
-          <span class="block text-3xl font-bold text-farafina-primary">{countries.length}</span>
+          <span class="block text-3xl font-bold text-farafina-primary">{pays.length}</span>
           <span class="text-gray-600">Pays africains</span>
         </div>
 
@@ -143,7 +149,7 @@ const featuredCountries = countries.slice(0, 3);
           <CountrySidebar client:load />
         </div>
         <div class="lg:w-3/4">
-          <CountryList countries={countries} />
+          <CountryList countries={pays.map(country => country.data)} />
         </div>
       </div>
     </div>

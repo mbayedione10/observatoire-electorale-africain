@@ -99,13 +99,13 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
         <div className="mt-6 flex justify-end space-x-3">
           <a 
             href={`/countries/${country.code.toLowerCase()}`}
-            className="px-4 py-2 bg-africa-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+            className="px-4 py-2 border-2 border-farafina-primary text-farafina-primary rounded-md hover:bg-farafina-primary/10 transition-colors"
           >
             Détails
           </a>
           <a 
             href={`/elections?country=${country.code.toLowerCase()}`}
-            className="px-4 py-2 bg-africa-warm text-white rounded-md hover:bg-opacity-90 transition-colors"
+            className="px-4 py-2 border-2 border-farafina-secondary text-farafina-secondary rounded-md hover:bg-farafina-secondary/10 transition-colors"
           >
             Élections
           </a>

@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/MainLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.tsx';
 import PageHeader from '../../components/PageHeader.tsx';
@@ -10,10 +11,38 @@ import AfricaMap from '../../components/countries/AfricaMap.tsx';
 import countriesData from '../../data/countries-extended.json';
 import { FaGlobeAfrica, FaVoteYea, FaBalanceScale, FaUsers, FaChartBar, FaCalendarAlt, FaNewspaper } from 'react-icons/fa';
 
-export function getStaticPaths() {
-  return countriesData.countries.map(country => ({
-    params: { code: country.code.toLowerCase() },
-    props: { country }
+export async function getStaticPaths() {
+  const pays = await getCollection('pays');
+  return pays.map(entry => ({
+    params: { code: entry.data.code.toLowerCase() },
+    props: { country: {
+      code: entry.data.code,
+      name: entry.data.name,
+      population: entry.data.population,
+      politicalSystem: "République Présidentielle",
+      lastElection: {
+        type: "Présidentielle",
+        year: 2024,
+        turnout: 65,
+        nextElectionYear: 2029
+      },
+      demographics: {
+        ageGroups: [
+          { group: "0-14", percentage: 25.3 },
+          { group: "15-24", percentage: 16.5 },
+          { group: "25-54", percentage: 42.2 },
+          { group: "55+", percentage: 16 }
+        ],
+        gender: {
+          male: entry.data.gender?.male || 50,
+          female: entry.data.gender?.female || 50
+        },
+        voterRegistration: {
+          registered: entry.data.voterRegistration?.registered || 0,
+          eligible: entry.data.voterRegistration?.eligible || 0
+        }
+      }
+    }}
   }));
 }
 
