@@ -107,3 +107,46 @@ export async function listLinkedRecords(
     return [];
   }
 }
+
+export async function getFullLinkedRecords(
+  sourceTableId: string,
+  sourceRecordId: string,
+  linkFieldId: string,
+  linkedTableId: string
+): Promise<any[]> {
+  try {
+    // Étape 1 : récupérer les IDs liés
+    const linkResponse = await api.get(
+      `/api/v2/tables/${sourceTableId}/links/${linkFieldId}/records/${sourceRecordId}`
+    );
+
+    const linkedItems = linkResponse.data?.list;
+    const linkedIds = Array.isArray(linkedItems)
+      ? linkedItems.map((item: any) => item.Id)
+      : linkedItems?.Id
+      ? [linkedItems.Id]
+      : [];
+
+    if (!linkedIds.length) return [];
+
+    // Étape 2 : filtrer les enregistrements par ID
+    const whereClause = `(Id,in,${linkedIds.join(",")})`;
+    
+    const params = {
+      where: whereClause,
+      limit: linkedIds.length.toString(),
+    };
+
+    const response = await api.get(`/api/v2/tables/${linkedTableId}/records`, {
+      params,
+    });
+
+    return response.data?.list ?? [];
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des données liées complètes :",
+      error
+    );
+    return [];
+  }
+}
