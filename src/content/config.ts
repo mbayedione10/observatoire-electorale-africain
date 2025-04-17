@@ -190,6 +190,7 @@ const pays2 = defineCollection({
     });
   },
   schema: z.object({
+    id: z.string(),
     code: z.string(),
     name: z.string(),
     population: z.number(),
@@ -229,8 +230,22 @@ const ressources = defineCollection({
       sort: "Année",
     };
     const records = await listTableRecords(tableId, params);
-    return records
+    return records.map(record => ({
+      id: record["Id"].toString(),
+      title: record.Title || "",
+      type: record["Type de données"] || "",
+      year: record["Année"] ? record["Année"].toString() : "",
+      description: record.description || "",
+      presentation_pays_id: record.presentation_pays_id ? record.presentation_pays_id.toString() : "",
+    }));
   },
+  schema: z.object({
+    title: z.string(),
+    type: z.string(),
+    year: z.string(),
+    description: z.string(),
+    presentation_pays_id: z.string(),
+  }),
 });
 
 

@@ -39,6 +39,12 @@ const legalFramework2 = country.ressources
   : null;
 console.log(JSON.stringify(legalFramework2, null, 2));
 
+const ressources = await getCollection('ressources');
+const legalFramework3 = ressources.filter(
+  ressource => ressource.data.presentation_pays_id === country.id
+);
+console.log(JSON.stringify(legalFramework3, null, 2));
+
 const legalFramework = {
   documents: [
     {
