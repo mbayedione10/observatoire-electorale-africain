@@ -35,7 +35,7 @@ const { country } = Astro.props;
 const ressources = await getCollection("ressources");
 const elections = await getCollection("elections");
 const resultatsElections = await getCollection("resultatsElections");
-//const defis = await getCollection("defisElections");
+const defis = await getCollection("defisElections");
 const organismesElectoraux = await getCollection("organismesElectoraux");
 
 const legalFramework3 = ressources.filter(
