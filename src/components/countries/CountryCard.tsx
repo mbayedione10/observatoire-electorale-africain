@@ -16,7 +16,7 @@ interface CountryCardProps {
     demographics?: {
       voterRegistration?: {
         registered: number;
-        eligible: number;
+        population: number;
       };
     };
   };
@@ -29,7 +29,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
   const flagUrl = `https://flagcdn.com/w160/${country.code.toLowerCase()}.png`;
   const registrationRate = country.demographics?.voterRegistration ? 
     ((country.demographics.voterRegistration.registered / 
-      country.demographics.voterRegistration.eligible) * 100).toFixed(1) : 
+      country.demographics.voterRegistration.population) * 100).toFixed(1) : 
     null;
 
   return (
@@ -73,7 +73,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
                 {country.lastElection.type} ({country.lastElection.year})
               </p>
               <p className="text-sm text-gray-600">
-                Participation: {country.lastElection.turnout}%
+                Participation: {country.lastElection.turnout}
               </p>
             </div>
           </div>

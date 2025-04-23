@@ -147,11 +147,51 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		"pays": Record<string, {
+		"defisElections": Record<string, {
+  id: string;
+  body?: string;
+  collection: "defisElections";
+  data: InferEntrySchema<"defisElections">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"elections": Record<string, {
+  id: string;
+  body?: string;
+  collection: "elections";
+  data: InferEntrySchema<"elections">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"organismesElectoraux": Record<string, {
+  id: string;
+  body?: string;
+  collection: "organismesElectoraux";
+  data: InferEntrySchema<"organismesElectoraux">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"pays": Record<string, {
   id: string;
   body?: string;
   collection: "pays";
   data: InferEntrySchema<"pays">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"ressources": Record<string, {
+  id: string;
+  body?: string;
+  collection: "ressources";
+  data: InferEntrySchema<"ressources">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"resultatsElections": Record<string, {
+  id: string;
+  body?: string;
+  collection: "resultatsElections";
+  data: InferEntrySchema<"resultatsElections">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;

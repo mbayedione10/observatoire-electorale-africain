@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntries, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/MainLayout.astro";
 import Breadcrumbs from "../../components/Breadcrumbs.tsx";
 import PageHeader from "../../components/PageHeader.tsx";
@@ -21,10 +21,9 @@ import {
 
 export async function getStaticPaths() {
   const pays = await getCollection("pays");
-  const pays2 = await getCollection("pays2");
 
-  return pays2.map((entry) => ({
-    params: { code: entry.data.code.toLowerCase() },
+  return pays.map((entry) => ({
+    params: { code: entry.data.code?.toLowerCase() },
     props: {
       country: entry.data,
     },
@@ -32,45 +31,56 @@ export async function getStaticPaths() {
 }
 
 const { country } = Astro.props;
-console.log(JSON.stringify(country, null, 2));
 
-const legalFramework2 = country.ressources
-  ? await getEntries(country.ressources)
-  : null;
-console.log(JSON.stringify(legalFramework2, null, 2));
+const ressources = await getCollection("ressources");
+const elections = await getCollection("elections");
+const resultatsElections = await getCollection("resultatsElections");
+//const defis = await getCollection("defisElections");
+const organismesElectoraux = await getCollection("organismesElectoraux");
 
-const ressources = await getCollection('ressources');
 const legalFramework3 = ressources.filter(
-  ressource => ressource.data.presentation_pays_id === country.id
+  (ressource) => ressource.data.Pays_id === country.id,
 );
-console.log(JSON.stringify(legalFramework3, null, 2));
+const organismes = organismesElectoraux.filter(
+  (organisme) => organisme.data.Pays_id === country.id,
+);
+
+const electionEvents3 = elections.filter(
+  (election) => election.data.Pays_id === country.id,
+);
+
+const electoralOrganism = {
+  politicalSystem: country.politicalSystem,
+  electoralModel: country.modele,
+  presidentialVote: country.presidentialVote,
+  legislativeVote: country.legislativeVote,
+  electoralOrganisms: organismes.map((organisme) => ({
+    name: organisme.data.nom,
+    ville: organisme.data.ville,
+    anneeDeCreation: organisme.data.anneeDeCreation,
+    siteweb: organisme.data.siteweb,
+    telephone: organisme.data.telephone,
+    email: organisme.data.email,
+  })),
+};
 
 const legalFramework = {
-  documents: [
-    {
-      title: `Constitution de ${country.name}`,
-      type: "Constitution",
-      year: parseInt(
-        country.electoralFramework?.constitution?.match(/\d{4}/)?.[0] ||
-          new Date().getFullYear()
-      ),
-      description: `Constitution actuelle de ${country.name}`,
-    },
-    {
-      title: `Code Électoral`,
-      type: "Loi Électorale",
-      year: parseInt(
-        country.electoralFramework?.electoralCode?.match(/\d{4}/)?.[0] ||
-          new Date().getFullYear()
-      ),
-      description: `Code électoral en vigueur`,
-    },
-  ],
+  documents: legalFramework3
+    //.filter((r) => r.data.type === "Constitution" || r.data.type === "Loi Électorale")
+    .slice(0, 2) // Limiter à 2 éléments
+    .map((r) => ({
+      title: r.data.title,
+      type: r.data.type,
+      year: r.data.year,
+      description: r.data.description || "",
+      url: r.data.fichier || "",
+    })),
+
   timeline: [
     {
       year: parseInt(
         country.electoralFramework?.constitution?.match(/\d{4}/)?.[0] ||
-          new Date().getFullYear()
+          new Date().getFullYear(),
       ),
       event: `Adoption de la Constitution actuelle`,
       type: "constitution",
@@ -84,19 +94,49 @@ const legalFramework = {
 };
 
 // Sample election timeline data
-const electionEvents = [
+const electionEvents = electionEvents3.map((e) => {
+  const resultatsElections3 = resultatsElections.filter(
+    (resultat) => resultat.data.Elections_id === e.data.id,
+  );
+  return {
+    results:
+      e.data.statut === "Précédente"
+        ? resultatsElections3[0]?.data.resultats
+        : undefined,
+    date: e.data.dateElection,
+    type: e.data.typeElection,
+    status: e.data.statut,
+    turnout:
+      e.data.statut === "Précédente"
+        ? resultatsElections3[0].data.participation
+        : undefined,
+    description:
+      e.data.statut === "Précédente"
+        ? `Élection ${e.data.typeElection.toLowerCase()} ${country.name}`
+        : `Prochaine élection ${e.data.typeElection.toLowerCase()} prévue`,
+  };
+});
+
+// Simuler des élections à venir
+const upcomingElections = [
   {
-    date: `${country.lastElection.year}-05-15`,
-    type: country.lastElection.type,
-    status: "completed",
-    turnout: country.lastElection.turnout,
-    description: `Élection ${country.lastElection.type.toLowerCase()} de ${country.name}`,
-  },
-  {
-    date: `${country.lastElection.nextElectionYear}-05-15`,
-    type: country.lastElection.type,
-    status: "upcoming",
-    description: `Prochaine élection ${country.lastElection.type.toLowerCase()} prévue`,
+    type: electionEvents.find(
+      (e) => e.status === "En préparation" || e.status === "À venir",
+    )?.type,
+    date: electionEvents.find(
+      (e) => e.status === "En préparation" || e.status === "À venir",
+    )?.date,
+    daysRemaining: (() => {
+      const upcomingDate = electionEvents.find(
+        (e) => e.status === "En préparation" || e.status === "À venir",
+      )?.date;
+      return upcomingDate
+        ? Math.ceil(
+            (new Date(upcomingDate).getTime() - new Date().getTime()) /
+              (1000 * 60 * 60 * 24),
+          )
+        : null;
+    })(),
   },
 ];
 
@@ -109,33 +149,28 @@ const keyStats = [
     color: "text-farafina-primary",
   },
   {
-    label: "Participation",
-    value: `${country.lastElection.turnout}%`,
+    label: "Participation derniere élection",
+    value: new Intl.NumberFormat("fr-FR").format(
+      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
+    ),
     icon: FaVoteYea,
     color: "text-farafina-secondary",
   },
   {
     label: "Électeurs inscrits",
     value: new Intl.NumberFormat("fr-FR").format(
-      country.demographics?.voterRegistration?.registered || 0
+      country.demographics?.voterRegistration?.registered || 0,
     ),
     icon: FaChartBar,
     color: "text-farafina-accent",
   },
   {
     label: "Prochaine élection",
-    value: country.lastElection.nextElectionYear,
+    value: upcomingElections[0]?.date
+      ? new Date(upcomingElections[0].date).getFullYear()
+      : "N/A",
     icon: FaCalendarAlt,
     color: "text-farafina-blue",
-  },
-];
-
-// Simuler des élections à venir
-const upcomingElections = [
-  {
-    type: country.lastElection.type,
-    date: `${country.lastElection.nextElectionYear}-05-15`,
-    daysRemaining: Math.floor(Math.random() * 365) + 30,
   },
 ];
 
@@ -149,7 +184,7 @@ const recentArticles = [
   {
     title: `Analyse du système électoral ${country.name.toLowerCase()}`,
     date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toLocaleDateString(
-      "fr-FR"
+      "fr-FR",
     ),
     excerpt: `Une étude approfondie du système électoral ${country.name.toLowerCase()} révèle des défis et des opportunités...`,
   },
@@ -178,13 +213,13 @@ const recentArticles = [
       >
         <div
           class="absolute inset-0 opacity-20"
-          style={`background-image: url(https://flagcdn.com/w1280/${country.code.toLowerCase()}.png); background-size: cover; background-position: center;`}
+          style={`background-image: url(https://flagcdn.com/w1280/${country.code.toLowerCase()}.webp); background-size: cover; background-position: center;`}
         >
         </div>
         <div class="absolute inset-0 flex items-center px-8">
           <div class="flex items-center">
             <img
-              src={`https://flagcdn.com/w160/${country.code.toLowerCase()}.png`}
+              src={`https://flagcdn.com/w160/${country.code.toLowerCase()}.webp`}
               alt={`Drapeau ${country.name}`}
               class="w-24 h-16 object-cover rounded shadow-md mr-6"
             />
@@ -235,7 +270,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
           >
-            <FaUsers class="mr-2" /> Données Démographiques
+            <FaUsers className="mr-2" /> Données Démographiques
           </h2>
           <DemographicChart
             client:visible
@@ -259,8 +294,22 @@ const recentArticles = [
               code: country.code,
               name: country.name,
               population: country.population,
-              lastElection: country.lastElection,
-              politicalSystem: country.politicalSystem,
+              lastElection: {
+                type:
+                  electionEvents.find((e) => e.status === "Précédente")?.type ||
+                  "N/A",
+                year: new Date(
+                  electionEvents.find((e) => e.status === "Précédente")?.date ||
+                    0,
+                ).getFullYear(),
+                turnout:
+                  electionEvents.find((e) => e.status === "Précédente")
+                    ?.turnout || 0,
+                nextElectionYear: upcomingElections[0]?.date
+                  ? new Date(upcomingElections[0].date).getFullYear()
+                  : 0,
+              },
+              politicalSystem: country.politicalSystem || "",
               demographics: country.demographics,
             }}
           />
@@ -282,7 +331,7 @@ const recentArticles = [
                     {election.type}
                   </span>
                   <span class="text-sm text-gray-500">
-                    {new Date(election.date).toLocaleDateString("fr-FR")}
+                    {new Date(election.date).getFullYear()}
                   </span>
                 </div>
                 <div class="flex items-center justify-between">
@@ -366,29 +415,50 @@ const recentArticles = [
             <p class="text-gray-700">{country.politicalSystem}</p>
           </div>
 
-          {
-            country.electoralFramework && (
-              <div class="space-y-4">
-                <div class="bg-farafina-secondary/5 rounded-lg p-4">
-                  <h3 class="font-semibold text-farafina-secondary mb-2">
-                    Constitution
-                  </h3>
-                  <p class="text-gray-700">
-                    {country.electoralFramework.constitution}
-                  </p>
-                </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Modèle de gestion des élections
+              </h3>
+              <p class="text-gray-700">{electoralOrganism.electoralModel}</p>
+            </div>
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Organismes Électoraux
+              </h3>
+              <ul class="list-disc pl-4">
+                {
+                  electoralOrganism.electoralOrganisms.map((eo) => (
+                    <li>
+                      <a
+                        href={eo.siteweb}
+                        class="text-farafina-primary hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {eo.name}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </div>
 
-                <div class="bg-farafina-accent/5 rounded-lg p-4">
-                  <h3 class="font-semibold text-farafina-accent mb-2">
-                    Code Électoral
-                  </h3>
-                  <p class="text-gray-700">
-                    {country.electoralFramework.electoralCode}
-                  </p>
-                </div>
-              </div>
-            )
-          }
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Régime de vote présidentiel
+              </h3>
+              <p class="text-gray-700">{electoralOrganism.presidentialVote}</p>
+            </div>
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Régime de vote legislatif
+              </h3>
+              <p class="text-gray-700">{electoralOrganism.legislativeVote}</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -397,14 +467,21 @@ const recentArticles = [
         <h2
           class="text-xl font-bold text-farafina-secondary mb-6 flex items-center"
         >
-          <FaBalanceScale class="mr-2" /> Cadre Juridique
+          <FaBalanceScale className="mr-2" /> Cadre Juridique
         </h2>
         <LegalFramework
           client:visible
-          documents={country.legalFramework?.documents ||
-            legalFramework.documents}
-          timeline={country.legalFramework?.timeline || legalFramework.timeline}
+          documents={legalFramework?.documents || legalFramework.documents}
+          timeline={legalFramework?.timeline || legalFramework.timeline}
         />
+        <div class="mt-4">
+          <a
+            href="/resources"
+            class="text-farafina-secondary hover:text-farafina-secondary/80 transition-colors text-sm"
+          >
+            Voir toutes les ressources →
+          </a>
+        </div>
       </div>
     </div>
 
@@ -456,5 +533,5 @@ const recentArticles = [
         </div>
       </div>
     </div>
-  </div>
-</Layout>
+  </div></Layout
+>

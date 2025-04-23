@@ -103,7 +103,6 @@ export async function listLinkedRecords(
     if (!data.list) throw new Error('Format de données invalide');
     return data.list.map((record: any) => ({ id: record.Id.toString(), ...record }));
   } catch (error) {
-    console.error(`Erreur lors de la récupération des enregistrements liés:`, error);
     return [];
   }
 }

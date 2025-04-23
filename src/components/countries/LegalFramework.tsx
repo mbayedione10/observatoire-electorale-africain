@@ -45,7 +45,7 @@ import React, { useState } from 'react';
               `}
               onClick={() => setActiveTab('documents')}
             >
-              Documents Légaux
+              Documents
             </button>
             <button
               className={`
@@ -61,15 +61,25 @@ import React, { useState } from 'react';
           </div>
 
           {activeTab === 'documents' && (
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               {documents.map((doc, index) => (
                 <div 
                   key={index} 
-                  className="border rounded-lg p-4 hover:shadow-sm transition-shadow"
+                  className="border text-farafina-secondary rounded-lg p-4 hover:shadow-sm transition-shadow"
                 >
                   <div className="flex items-center mb-2">
-                    <FaFileAlt className="mr-2 text-africa-accent" />
-                    <h3 className="font-semibold">{doc.title}</h3>
+                    <FaFileAlt className="mr-2  text-africa-accent" />
+                    {doc.url && (
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=""
+                      >
+                        <h3 className="font-semibold text-farafina-secondary">{doc.title}</h3>
+                      </a>
+                    )}
+                    
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{doc.description}</p>
                   <div className="flex justify-between items-center">

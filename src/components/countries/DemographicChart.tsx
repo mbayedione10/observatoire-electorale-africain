@@ -28,17 +28,17 @@ ChartJS.register(
 
 interface DemographicChartProps {
   demographics: {
-    ageGroups: {
-      group: string;
-      percentage: number;
-    }[];
     gender: {
+      male: number;
+      female: number;
+    };
+    genderRatio:{
       male: number;
       female: number;
     };
     voterRegistration: {
       registered: number;
-      eligible: number;
+      population: number;
     };
   };
 }
@@ -51,7 +51,7 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
     try {
       setIsLoading(true);
       // Verify data structure
-      if (!demographics?.ageGroups || !demographics?.gender || !demographics?.voterRegistration) {
+      if (!demographics?.genderRatio || !demographics?.gender || !demographics?.voterRegistration) {
         throw new Error('Invalid demographic data structure');
       }
       setIsLoading(false);
@@ -80,7 +80,7 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
   }
 
   // Data validation
-  if (!demographics?.ageGroups?.length || 
+  if (!demographics?.genderRatio?.male || 
       !demographics?.gender?.male || 
       !demographics?.voterRegistration?.registered) {
     return (
@@ -90,23 +90,18 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
     );
   }
 
-  const ageData = {
-    labels: demographics.ageGroups.map(group => group.group),
+  const genderRatioData = {
+    labels: ['Hommes', 'Femmes'],
     datasets: [
       {
-        label: 'Distribution par Âge',
-        data: demographics.ageGroups.map(group => group.percentage),
+        data: [demographics.genderRatio.male, demographics.genderRatio.female],
         backgroundColor: [
-          'rgba(52, 152, 219, 0.6)',
-          'rgba(46, 204, 113, 0.6)',
-          'rgba(155, 89, 182, 0.6)',
-          'rgba(231, 76, 60, 0.6)'
+          'rgba(67, 185, 127, 0.6)',
+          'rgba(45, 131, 245, 0.6)',
         ],
         borderColor: [
-          'rgba(52, 152, 219, 1)',
-          'rgba(46, 204, 113, 1)',
-          'rgba(155, 89, 182, 1)',
-          'rgba(231, 76, 60, 1)'
+          'rgba(67, 185, 127, 0.6)',
+          'rgba(45, 131, 245, 0.6)',
         ],
         borderWidth: 1,
       },
@@ -119,12 +114,12 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
       {
         data: [demographics.gender.male, demographics.gender.female],
         backgroundColor: [
-          'rgba(52, 152, 219, 0.6)',
-          'rgba(231, 76, 60, 0.6)',
+          'rgba(67, 185, 127, 0.6)',
+          'rgba(45, 131, 245, 0.6)',
         ],
         borderColor: [
-          'rgba(52, 152, 219, 1)',
-          'rgba(231, 76, 60, 1)',
+          'rgba(67, 185, 127, 0.6)',
+          'rgba(45, 131, 245, 0.6)',
         ],
         borderWidth: 1,
       },
@@ -132,21 +127,20 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
   };
 
   const voterData = {
-    labels: ['Inscrits', 'Éligibles'],
+    labels: ['Population', 'Electeurs'],
     datasets: [
       {
-        label: 'Nombre d\'électeurs',
         data: [
-          demographics.voterRegistration.registered,
-          demographics.voterRegistration.eligible
+          demographics.voterRegistration.population,
+          demographics.voterRegistration.registered
         ],
         backgroundColor: [
-          'rgba(46, 204, 113, 0.6)',
-          'rgba(52, 152, 219, 0.6)',
+          '#FF5836',
+          '#FFC24A',
         ],
         borderColor: [
-          'rgba(46, 204, 113, 1)',
-          'rgba(52, 152, 219, 1)',
+          '#FF5836',
+          '#FFC24A',
         ],
         borderWidth: 1,
       },
@@ -175,14 +169,14 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
     },
     scales: {
       x: {
-        display: true,
+        display: false,
       },
       y: {
         display: true,
         beginAtZero: true,
         ticks: {
-          callback: function(value: number) {
-            return value + '%';
+          callback: function(tickValue: string | number) {
+            return tickValue;
           }
         }
       }
@@ -191,20 +185,11 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
 
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* Distribution par Âge */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Distribution par Âge
-        </h3>
-        <div className="h-64">
-          <Bar data={ageData} options={chartOptions} />
-        </div>
-      </div>
 
       {/* Répartition par Genre */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Répartition par Genre
+          Répartition de la population par genre
         </h3>
         <div className="h-64">
           <Doughnut data={genderData} options={chartOptions} />
@@ -214,15 +199,37 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
       {/* Inscription Électorale */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Inscription Électorale
+          Inscription électorale
         </h3>
         <div className="h-64">
-          <Bar data={voterData} options={chartOptions} />
+          <Bar data={voterData} options={{...chartOptions, plugins: {legend: {display: false}}}} />
         </div>
-        <div className="mt-4 text-center text-sm text-gray-600">
-          Taux d'inscription: {((demographics.voterRegistration.registered / demographics.voterRegistration.eligible) * 100).toFixed(1)}%
+        <div className="mt-2 flex justify-center space-x-4">
+          <div className="flex items-center">
+            <span className="inline-block ml-2 w-3 h-3 mr-2 bg-[#FF5836] rounded-full"></span>
+            <span className="text-sm text-gray-600">Population</span>
+          </div>
+          <div className="flex items-center">
+            <span className="inline-block w-5 h-3 mr-2 bg-[#FFC24A] rounded-full"></span>
+            <span className="text-sm text-gray-600">électorale inscrits</span>
+          </div>
         </div>
-      </div>
+        <div className="mt-3 text-center text-sm text-gray-600">
+          Taux d'inscription: {((demographics.voterRegistration.registered / demographics.voterRegistration.population) * 100).toFixed(1)}%
+        </div>
+    </div>
+      {/* Répartition electoral en genre */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
+          Répartition électorale en genre
+        </h3>
+        <div className="h-64">
+            <Doughnut data={genderRatioData} options={chartOptions} />
+        </div>
+      </div>  
+
+      
+
     </div>
   );
 };
