@@ -27,18 +27,51 @@ export const api = axios.create({
  * @param params - Paramètres optionnels (ex: limit, offset).
  * @returns Un tableau d'enregistrements.
  */
-export async function listTableRecords(tableId: string, fields: string[] = [], params: Record<string, string> = {}): Promise<any[]> {
+export async function listTableRecords(
+  tableId: string,
+  fields: string[] = [],
+  params: Record<string, string> = {},
+  retries: number = 5,
+  delay: number = 2000
+): Promise<any[]> {
   try {
     if (fields.length > 0) {
       params.fields = fields.join(',');
     }
+
     const response = await api.get(`/api/v2/tables/${tableId}/records`, { params });
+
+    // Vérifier si le statut est 429 (trop de requêtes)
+    if (response.status === 429) {
+      if (retries > 0) {
+        console.log(`Trop de requêtes, attente de ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        // Appel récursif avec retries décrémenté et délai doublé
+        return listTableRecords(tableId, fields, params, retries - 1, delay * 2);
+      } else {
+        throw new Error('Trop de tentatives avec erreur 429');
+      }
+    }
+
     const data = response.data;
     if (!data.list) throw new Error('Format de données invalide');
     return data.list.map((record: any) => ({ id: record.Id.toString(), ...record }));
-  } catch (error) {
-    console.error(`Erreur lors de la récupération des enregistrements pour la table ${tableId}:`, error);
-    return [];
+  } catch (error: any) {
+    // Gestion de l'erreur 429
+    if (error.response && error.response.status === 429) {
+      if (retries > 0) {
+        console.log(`Trop de requêtes, attente de ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return listTableRecords(tableId, fields, params, retries - 1, delay * 2);
+      } else {
+        console.error(`Erreur 429 après plusieurs tentatives pour la table ${tableId}:`, error);
+        return [];
+      }
+    } else {
+      // Gestion des autres erreurs
+      console.error(`Erreur lors de la récupération des enregistrements pour la table ${tableId}:`, error);
+      return [];
+    }
   }
 }
 
@@ -103,7 +136,6 @@ export async function listLinkedRecords(
     if (!data.list) throw new Error('Format de données invalide');
     return data.list.map((record: any) => ({ id: record.Id.toString(), ...record }));
   } catch (error) {
-    console.error(`Erreur lors de la récupération des enregistrements liés:`, error);
     return [];
   }
 }

@@ -1,0 +1,33 @@
+export const paysData = [
+  "Id",
+  "nom_pays",
+  "code",
+  "population",
+  "hommes",
+  "femmes",
+  "langues_officielles",
+  "nombre_électeurs",
+  "électeurs_hommes",
+  "électeurs_femmes",
+  "modèle_gestion_élections",
+  "système_politique",
+  "modèle_gestion_élections",
+  "Organe de validation des candidatures",
+  "Régime de vote presidentiel",
+  "Régime de vote legislative",
+  "Organe de proclamation des résultats provisoires",
+  "Organe de gestion des contentieux électoraux",
+  "Organe de proclamation des resultats definitifs",
+  "Organismes Electoraux",
+  "Elections",
+  "Ressources",
+  "Organisations",
+];
+
+export const electionsData = [
+  "Id",
+  "date_élection",
+  "type_élection",
+  "Pays_id",
+  "Résultats Élections",
+  ];

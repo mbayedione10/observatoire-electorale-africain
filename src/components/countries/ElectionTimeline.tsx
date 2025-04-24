@@ -5,7 +5,7 @@ interface ElectionTimelineProps {
   events: {
     date: string;
     type: string;
-    status: 'completed' | 'upcoming' | 'ongoing';
+    status: 'Précédente' | 'À venir' | 'En préparation';
     turnout?: number;
     description: string;
   }[];
@@ -17,11 +17,11 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
+      case 'Précédente':
         return <FaCheckCircle className="text-green-500" />;
-      case 'upcoming':
+      case 'À venir':
         return <FaClock className="text-blue-500" />;
-      case 'ongoing':
+      case 'En préparation':
         return <FaVoteYea className="text-yellow-500" />;
       default:
         return null;
@@ -30,11 +30,11 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
 
   const getStatusClass = (status: string) => {
     switch (status) {
-      case 'completed':
+      case 'Précédente':
         return 'bg-green-50 border-green-200';
-      case 'upcoming':
+      case 'À venir':
         return 'bg-blue-50 border-blue-200';
-      case 'ongoing':
+      case 'En préparation':
         return 'bg-yellow-50 border-yellow-200';
       default:
         return 'bg-gray-50 border-gray-200';
@@ -66,11 +66,11 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
                   </h3>
                   <p className="text-gray-600">{event.date}</p>
                 </div>
-                {event.status === 'completed' && event.turnout && (
+                {event.status === 'Précédente' && event.turnout && (
                   <div className="text-right">
                     <span className="text-sm text-gray-600">Participation</span>
                     <p className="font-semibold text-africa-secondary">
-                      {event.turnout}%
+                      {event.turnout}
                     </p>
                   </div>
                 )}
