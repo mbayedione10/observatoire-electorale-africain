@@ -18,7 +18,7 @@ export const paysData = [
   "Organe de proclamation des résultats provisoires",
   "Organe de gestion des contentieux électoraux",
   "Organe de proclamation des resultats definitifs",
-  "Organismes Electoraux",
+  "Organes Gestion Electoraux",
   "Elections",
   "Ressources",
   "Organisations",
@@ -26,8 +26,37 @@ export const paysData = [
 
 export const electionsData = [
   "Id",
+  "statut",
   "date_élection",
   "type_élection",
   "Pays_id",
   "Résultats Élections",
   ];
+  
+export const resultatsElectionsData = [
+      "Id",
+      "résultats",
+      "participation",
+      "source_résultats",
+      "Défis Electorals",
+      "Elections_id",
+    ];
+
+export const defisData = [
+      "Id",
+      "libellé defis",
+      "type_défi",
+      "source_defi",
+      "Résultats Élections_id",
+    ];
+
+export const organismesElectorauxData = [
+      "Id",
+      "nom",
+      "ville",
+      "annee de creation",
+      "siteweb",
+      "telephone",
+      "email",
+      "Pays_id",
+    ];

@@ -26,11 +26,11 @@ const formatNumber = (num: number) =>
   new Intl.NumberFormat('fr-FR').format(num);
 
 const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
-  const flagUrl = `https://flagcdn.com/w160/${country.code.toLowerCase()}.png`;
-  const registrationRate = country.demographics?.voterRegistration ? 
-    ((country.demographics.voterRegistration.registered / 
-      country.demographics.voterRegistration.population) * 100).toFixed(1) : 
-    null;
+  const flagUrl = `https://flagcdn.com/w160/${country.code.toLowerCase()}.webp`;
+  const registrationRate = country.demographics?.voterRegistration?.registered 
+    ? ((country.lastElection.turnout / 
+        country.demographics.voterRegistration.registered) * 100).toFixed(1) 
+    : null;
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">

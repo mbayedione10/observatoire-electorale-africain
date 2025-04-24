@@ -64,7 +64,9 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
                   <h3 className="text-lg font-semibold text-africa-primary">
                     {event.type}
                   </h3>
-                  <p className="text-gray-600">{event.date}</p>
+                  <p className="text-gray-600">
+                    {event.status === 'À venir' ? new Date(event.date).getFullYear().toString() : event.date}
+                  </p>
                 </div>
                 {event.status === 'Précédente' && event.turnout && (
                   <div className="text-right">

@@ -1,6 +1,6 @@
 import { defineCollection, z, reference } from "astro:content";
 import { listTableRecords } from '../lib/api/nocodb';
-import { paysData } from "./fields";
+import { paysData, electionsData, resultatsElectionsData, defisData, organismesElectorauxData } from "./fields";
 
 
 // Fonction utilitaire pour générer un slug à partir d’une chaîne
@@ -100,7 +100,7 @@ const ressources = defineCollection({
       where: "(type_donnée,notnull)",
       sort: "année",
     };
-    const records = await listTableRecords(tableId, undefined, params);
+    const records = await listTableRecords(tableId, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       title: record.titre || "",
@@ -126,14 +126,7 @@ const ressources = defineCollection({
 const elections = defineCollection({
   loader: async () => {
     const tableId = "mufcewiwnu6czob";
-    const fields = [
-      "Id",
-      "statut",
-      "date_élection",
-      "type_élection",
-      "Pays_id",
-      "Résultats Élections",
-    ];
+    const fields = electionsData;
     const params = {
       where: "(type_élection,notnull)",
       sort: "-date_élection",
@@ -162,14 +155,7 @@ const elections = defineCollection({
 const resultatsElections = defineCollection({
   loader: async () => {
     const tableId = "mm158oifoa20mjd";
-    const fields = [
-      "Id",
-      "résultats",
-      "participation",
-      "source_résultats",
-      "Défis Electorals",
-      "Elections_id",
-    ];
+    const fields = resultatsElectionsData;
     const params = {
       where: "(résultats,notnull)",
     };
@@ -195,13 +181,7 @@ const resultatsElections = defineCollection({
 const defisElections = defineCollection({
   loader: async () => {
     const tableId = "mv1dqchljj7zoic";
-    const fields = [
-      "Id",
-      "libellé defis",
-      "type_défi",
-      "source_defi",
-      "Résultats Élections_id",
-    ];
+    const fields = defisData;
     const params = {
       where: "(libellé defis,notnull)",
     };
@@ -229,16 +209,7 @@ const defisElections = defineCollection({
 const organismesElectoraux = defineCollection({
   loader: async () => {
     const tableId = "mdw3p2nr069jqzi";
-    const fields = [
-      "Id",
-      "nom",
-      "ville",
-      "annee de creation",
-      "siteweb",
-      "telephone",
-      "email",
-      "Pays_id",
-    ];
+    const fields = organismesElectorauxData;
     const params = {
       where: "(nom,notnull)",
     };
