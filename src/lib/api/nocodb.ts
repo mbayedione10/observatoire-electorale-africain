@@ -31,7 +31,7 @@ export async function listTableRecords(
   tableId: string,
   fields: string[] = [],
   params: Record<string, string> = {},
-  retries: number = 5,
+  retries: number = 10,
   delay: number = 2000
 ): Promise<any[]> {
   try {
