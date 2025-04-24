@@ -2,20 +2,6 @@ import { defineCollection, z, reference } from "astro:content";
 import { listTableRecords } from '../lib/api/nocodb';
 import { paysData } from "./fields";
 
-// Fonction utilitaire pour créer un délai
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-// Wrapper pour limiter les requêtes à l'API NocoDB
-const rateLimitedListTableRecords = async (
-  tableId: string,
-  fields?: string[],
-  params?: Record<string, string>,
-  rateLimit: number = 1000 
-) => {
-  // Attendre le délai spécifié pour respecter la limite de 5 RPS
-  await delay(rateLimit);
-  return listTableRecords(tableId, fields, params);
-};
 
 // Fonction utilitaire pour générer un slug à partir d’une chaîne
 function generateSlug(text: string): string {
@@ -40,7 +26,7 @@ const pays = defineCollection({
       sort: "nom_pays",
     };
 
-    const paysRecords = await rateLimitedListTableRecords(paysTableId, fields, params);
+    const paysRecords = await listTableRecords(paysTableId, fields, params);
     return paysRecords.map((record) => ({
       id: record["Id"].toString(),
       code: record["code"],
@@ -114,7 +100,7 @@ const ressources = defineCollection({
       where: "(type_donnée,notnull)",
       sort: "année",
     };
-    const records = await rateLimitedListTableRecords(tableId, undefined, params);
+    const records = await listTableRecords(tableId, undefined, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       title: record.titre || "",
@@ -152,7 +138,7 @@ const elections = defineCollection({
       where: "(type_élection,notnull)",
       sort: "-date_élection",
     };
-    const records = await rateLimitedListTableRecords(tableId, fields, params);
+    const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       statut: record["statut"] || "",
@@ -187,7 +173,7 @@ const resultatsElections = defineCollection({
     const params = {
       where: "(résultats,notnull)",
     };
-    const records = await rateLimitedListTableRecords(tableId, fields, params);
+    const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       resultats: record["résultats"] || "",
@@ -219,7 +205,7 @@ const defisElections = defineCollection({
     const params = {
       where: "(libellé defis,notnull)",
     };
-    const records = await rateLimitedListTableRecords(tableId, fields, params);
+    const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       libelleDefis: record["libellé defis"] || "",
@@ -256,7 +242,7 @@ const organismesElectoraux = defineCollection({
     const params = {
       where: "(nom,notnull)",
     };
-    const records = await rateLimitedListTableRecords(tableId, fields, params);
+    const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
       id: record["Id"].toString(),
       nom: record["nom"] || "",
