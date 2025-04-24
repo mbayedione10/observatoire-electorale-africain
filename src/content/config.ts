@@ -224,7 +224,7 @@ const defisElections = defineCollection({
       id: record["Id"].toString(),
       libelleDefis: record["libellé defis"] || "",
       typeDefi: record["type_défi"] || "",
-      sourceDefi: record["source_défi"] || "",
+      sourceDefi: record["source_defi"] || "",
       ResultatsElections: record["Résultats elections"] || "",
       resultats: record["Résultats Élections_id"] ? record["Résultats Élections_id"].toString() : "",
     }));
