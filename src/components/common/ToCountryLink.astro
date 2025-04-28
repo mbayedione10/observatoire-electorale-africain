@@ -1,0 +1,16 @@
+---
+import type { IconType } from 'react-icons';
+
+export interface Props {
+    href: string;
+    title: string;
+    iconLink: IconType;
+}
+
+const { href, title, iconLink: IconLink } = Astro.props;
+---
+
+<a href={href} title={title} target="_blank" rel="noopener noreferrer">
+    <IconLink className="text-white/80 text-2xl"/>
+</a>
+

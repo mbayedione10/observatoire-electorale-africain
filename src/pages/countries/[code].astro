@@ -9,6 +9,7 @@ import LegalFramework from "../../components/countries/LegalFramework.tsx";
 import ElectionTimeline from "../../components/countries/ElectionTimeline.tsx";
 import AfricaMap from "../../components/countries/AfricaMap.tsx";
 import countriesData from "../../data/countries-extended.json";
+import ToCountryLink from "@/components/common/ToCountryLink.astro";
 import {
   FaGlobeAfrica,
   FaVoteYea,
@@ -18,6 +19,10 @@ import {
   FaCalendarAlt,
   FaNewspaper,
   FaExclamationTriangle,
+  FaTwitter,
+  FaLinkedin,
+  FaFacebookF,
+  FaEnvelope,
 } from "react-icons/fa";
 
 export async function getStaticPaths() {
@@ -100,7 +105,10 @@ const electionEvents = electionEvents3.map((e) => {
     (resultat) => resultat.data.Elections_id === e.data.id,
   );
   const defisElection = defis.filter(
-    (defi) => defi.data.resultats === resultatsElections3[0]?.data.id,
+    (defi) =>
+      defi.data.resultats === resultatsElections3[0]?.data.id &&
+      e.data.statut === "Précédente" &&
+      e.data.id === country.id,
   );
   return {
     results:
@@ -160,14 +168,6 @@ const keyStats = [
     color: "text-farafina-primary",
   },
   {
-    label: "Participation derniere élection",
-    value: new Intl.NumberFormat("fr-FR").format(
-      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
-    ),
-    icon: FaVoteYea,
-    color: "text-farafina-secondary",
-  },
-  {
     label: "Électeurs inscrits",
     value: new Intl.NumberFormat("fr-FR").format(
       country.demographics?.voterRegistration?.registered || 0,
@@ -176,12 +176,62 @@ const keyStats = [
     color: "text-farafina-accent",
   },
   {
+    label: "Derniere élection",
+    value: electionEvents.find((e) => e.status === "Précédente")?.date
+      ? new Date(
+          electionEvents.find((e) => e.status === "Précédente")?.date || 0,
+        ).getFullYear()
+      : "N/A",
+    icon: FaCalendarAlt,
+    color: "text-farafina-secondary",
+  },
+  {
+    label: "Participation",
+    value: new Intl.NumberFormat("fr-FR").format(
+      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
+    ),
+    icon: FaVoteYea,
+    color: "text-farafina-secondary",
+  },
+
+  {
     label: "Prochaine élection",
     value: upcomingElections[0]?.date
       ? new Date(upcomingElections[0].date).getFullYear()
       : "N/A",
     icon: FaCalendarAlt,
     color: "text-farafina-blue",
+  },
+];
+
+const socialLinks = [
+  {
+    name: "Twitter",
+    href: (code: string, name: string) =>
+      `https://twitter.com/share?url=https://farafina.tech/countries/${code}&text=Voir%20les%20informations%20%C3%A9lectorales%20du%20${name}`,
+    title: "Partager sur Twitter",
+    icon: FaTwitter,
+  },
+  {
+    name: "LinkedIn",
+    href: (code: string, name: string) =>
+      `https://www.linkedin.com/sharing/share-offsite/?url=https://farafina.tech/countries/${code}`,
+    title: "Partager sur LinkedIn",
+    icon: FaLinkedin,
+  },
+  {
+    name: "Facebook",
+    href: (code: string, name: string) =>
+      `https://www.facebook.com/sharer/sharer.php?u=https://farafina.tech/countries/${code}`,
+    title: "Partager sur Facebook",
+    icon: FaFacebookF,
+  },
+  {
+    name: "Email",
+    href: (code: string, name: string) =>
+      `https://farafina.tech/countries/${code}`,
+    title: "Partager par Email",
+    icon: FaEnvelope,
   },
 ];
 
@@ -239,10 +289,23 @@ const recentArticles = [
               <p class="text-white/80">{country.politicalSystem}</p>
             </div>
           </div>
+          <div class="flex items-center space-x-2 ml-auto">
+            {
+              socialLinks.map((link) => (
+                
+                <ToCountryLink
+                  href={link.href(country.code.toLowerCase(), country.name)}
+                  title={link.title}
+                  iconLink={link.icon}
+                />
+              ))
+            }
+            
+          </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 p-6">
         {
           keyStats.map((stat) => (
             <div class="flex items-center">
@@ -376,7 +439,7 @@ const recentArticles = [
         </div>
 
         <!-- Articles récents -->
-        <div class="bg-white rounded-xl shadow-md p-6">
+        <!--div class="bg-white rounded-xl shadow-md p-6">
           <h2
             class="text-xl font-bold text-farafina-accent mb-6 flex items-center"
           >
@@ -405,7 +468,7 @@ const recentArticles = [
               Voir toutes les actualités →
             </a>
           </div>
-        </div>
+        </div-->
       </div>
     </div>
 
@@ -539,6 +602,7 @@ const recentArticles = [
                 <div class="mt-2 pt-4 border-t border-gray-100 flex justify-end">
                   <a
                     href={challenge.url}
+                    target="_blank"
                     class="text-farafina-accent hover:text-farafina-accent/80 transition-colors"
                   >
                     Voir l'analyse complète →
