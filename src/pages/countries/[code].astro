@@ -24,6 +24,7 @@ import {
   FaFacebookF,
   FaEnvelope,
 } from "react-icons/fa";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const pays = await getCollection("pays");
@@ -44,22 +45,30 @@ const resultatsElections = await getCollection("resultatsElections");
 const defis = await getCollection("defisElections");
 const organismesElectoraux = await getCollection("organismesElectoraux");
 
-const legalFramework3 = ressources.filter(
+const legalFramework3 = ressources?.filter(
   (ressource) => ressource.data.Pays_id === country.id,
 );
-const organismes = organismesElectoraux.filter(
+const organismes = organismesElectoraux?.filter(
   (organisme) => organisme.data.Pays_id === country.id,
 );
 
-const electionEvents3 = elections.filter(
+const electionEvents3 = elections?.filter(
   (election) => election.data.Pays_id === country.id,
 );
 
 const electoralOrganism = {
   politicalSystem: country.politicalSystem,
   electoralModel: country.modele,
-  presidentialVote: country.presidentialVote,
-  legislativeVote: country.legislativeVote,
+  vote: {
+    presidentialVote: country.vote.presidentialVote,
+    presidentialResults: country.vote.presidentialResults,
+    legislativeVote: country.vote.legislativeVote,
+    legislativeResults: country.vote.legislativeResults,
+    validationBody: country.vote.validationBody,
+    disputesManagementBody: country.vote.disputesManagementBody,
+    provisionalResultsBody: country.vote.provisionalResultsBody,
+    type: "election-law" as const,
+  },
   electoralOrganisms: organismes.map((organisme) => ({
     name: organisme.data.nom,
     ville: organisme.data.ville,
@@ -73,7 +82,8 @@ const electoralOrganism = {
 const legalFramework = {
   documents: legalFramework3
     //.filter((r) => r.data.type === "Constitution" || r.data.type === "Loi Électorale")
-    .slice(0, 2) // Limiter à 2 éléments
+    .sort((a, b) => b.data.year - a.data.year)
+    .slice(0, 4) // Limiter à 4 éléments
     .map((r) => ({
       title: r.data.title,
       type: r.data.type,
@@ -81,7 +91,6 @@ const legalFramework = {
       description: r.data.description || "",
       url: r.data.fichier || "",
     })),
-
   timeline: [
     {
       year: parseInt(
@@ -101,10 +110,10 @@ const legalFramework = {
 
 // Sample election timeline data
 const electionEvents = electionEvents3.map((e) => {
-  const resultatsElections3 = resultatsElections.filter(
+  const resultatsElections3 = resultatsElections?.filter(
     (resultat) => resultat.data.Elections_id === e.data.id,
   );
-  const defisElection = defis.filter(
+  const defisElection = defis?.filter(
     (defi) =>
       defi.data.resultats === resultatsElections3[0]?.data.id &&
       e.data.statut === "Précédente" &&
@@ -120,7 +129,7 @@ const electionEvents = electionEvents3.map((e) => {
     status: e.data.statut,
     turnout:
       e.data.statut === "Précédente"
-        ? resultatsElections3[0].data.participation
+        ? resultatsElections3[0]?.data.participation
         : undefined,
     description:
       e.data.statut === "Précédente"
@@ -208,7 +217,7 @@ const socialLinks = [
   {
     name: "Twitter",
     href: (code: string, name: string) =>
-      `https://twitter.com/share?url=https://farafina.tech/countries/${code}&text=Voir%20les%20informations%20%C3%A9lectorales%20du%20${name}`,
+      `https://twitter.com/share?url=https://farafina.tech/countries/${code}&text=Voir%20les%20informations%20%C3%A9lectorales%20de%20${name}`,
     title: "Partager sur Twitter",
     icon: FaTwitter,
   },
@@ -229,7 +238,7 @@ const socialLinks = [
   {
     name: "Email",
     href: (code: string, name: string) =>
-      `https://farafina.tech/countries/${code}`,
+      `mailto:?subject=Voir%20les%20informations%20%C3%A9lectorales%20de%20${name}&body=https://farafina.tech/countries/${code}`,
     title: "Partager par Email",
     icon: FaEnvelope,
   },
@@ -292,7 +301,6 @@ const recentArticles = [
           <div class="flex items-center space-x-2 ml-auto">
             {
               socialLinks.map((link) => (
-                
                 <ToCountryLink
                   href={link.href(country.code.toLowerCase(), country.name)}
                   title={link.title}
@@ -300,7 +308,6 @@ const recentArticles = [
                 />
               ))
             }
-            
           </div>
         </div>
       </div>
@@ -505,7 +512,7 @@ const recentArticles = [
                   electoralOrganism.electoralOrganisms.map((eo) => (
                     <li>
                       <a
-                        href={eo.siteweb}
+                        href={eo?.siteweb}
                         class="text-farafina-primary hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -525,14 +532,60 @@ const recentArticles = [
                 Régime de vote présidentiel
               </h3>
               <p class="text-gray-700">
-                {electoralOrganism.presidentialVote}
+                {electoralOrganism.vote.presidentialVote}
               </p>
             </div>
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
                 Régime de vote legislatif
               </h3>
-              <p class="text-gray-700">{electoralOrganism.legislativeVote}</p>
+              <p class="text-gray-700">
+                {electoralOrganism.vote.legislativeVote}
+              </p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Validation des candidatures
+              </h3>
+              <p class="text-gray-700">
+                {electoralOrganism.vote.validationBody}
+              </p>
+            </div>
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Gestion des contentieux électoraux
+              </h3>
+              <p class="text-gray-700">
+                {electoralOrganism.vote.disputesManagementBody}
+              </p>
+            </div>
+          </div>
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Resultats provisoire
+            </h3>
+            <p class="text-gray-700">
+              {electoralOrganism.vote.provisionalResultsBody}
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Resultats definitifs presidentiels
+              </h3>
+              <p class="text-gray-700">
+                {electoralOrganism.vote.presidentialResults}
+              </p>
+            </div>
+            <div class="bg-farafina-primary/5 rounded-lg p-4">
+              <h3 class="font-semibold text-farafina-primary mb-2">
+                Resultats definitifs legislatifs
+              </h3>
+              <p class="text-gray-700">
+                {electoralOrganism.vote.legislativeResults}
+              </p>
             </div>
           </div>
         </div>
@@ -548,7 +601,8 @@ const recentArticles = [
         <LegalFramework
           client:visible
           documents={legalFramework?.documents || legalFramework.documents}
-          timeline={legalFramework?.timeline || legalFramework.timeline}
+          timeline={electoralOrganism?.vote || electoralOrganism.vote}
+          electoralOrganism={electoralOrganism?.vote || electoralOrganism.vote}
         />
         <div class="mt-4">
           <a
@@ -575,9 +629,17 @@ const recentArticles = [
 
     <!-- Liste des défis électoraux -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 class="text-xl font-bold text-farafina-accent mb-6 flex items-center">
-        <FaExclamationTriangle className="mr-2" /> Defis de la derniere election
-      </h2>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-farafina-accent flex items-center">
+          <FaExclamationTriangle className="mr-2" /> Defis de la derniere election
+        </h2>
+        <a
+          href="/elections/challenges"
+          class="text-farafina-accent hover:text-farafina-accent/80 transition-colors text-sm font-medium"
+        >
+          Voir tous les defis →
+        </a>
+      </div>
 
       <div class="space-y-6">
         {
@@ -642,10 +704,13 @@ const recentArticles = [
           </div>
         </div>
         <div class="hidden md:block relative">
-          <img
-            src="/placeholder.svg?height=300&width=400"
+          <Image
+            src="/images/mapping.webp"
             alt={`Ressources sur ${country.name}`}
             class="w-full h-full object-cover"
+            width={400}
+            height={300}
+            inferSize
           />
           <div class="absolute inset-0 bg-black/20"></div>
         </div>

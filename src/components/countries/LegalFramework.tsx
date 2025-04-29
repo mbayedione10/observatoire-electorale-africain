@@ -47,17 +47,6 @@ import React, { useState } from 'react';
             >
               Documents
             </button>
-            <button
-              className={`
-                px-4 py-2 
-                ${activeTab === 'timeline' 
-                  ? 'border-b-2 border-africa-secondary text-africa-secondary' 
-                  : 'text-gray-600'}
-              `}
-              onClick={() => setActiveTab('timeline')}
-            >
-              Chronologie
-            </button>
           </div>
 
           {activeTab === 'documents' && (
