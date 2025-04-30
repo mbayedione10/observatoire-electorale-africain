@@ -189,7 +189,7 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
       {/* Répartition par Genre */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Répartition de la population par genre
+          Répartition de la Population par Genre
         </h3>
         <div className="h-64">
           <Doughnut data={genderData} options={chartOptions} />
@@ -199,7 +199,7 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
       {/* Inscription Électorale */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Inscription électorale
+          Inscription Électorale
         </h3>
         <div className="h-64">
           <Bar data={voterData} options={{...chartOptions, plugins: {legend: {display: false}}}} />
@@ -211,17 +211,17 @@ const DemographicChart: React.FC<DemographicChartProps> = ({ demographics }) => 
           </div>
           <div className="flex items-center">
             <span className="inline-block w-5 h-3 mr-2 bg-[#FFC24A] rounded-full"></span>
-            <span className="text-sm text-gray-600">électorale inscrits</span>
+            <span className="text-sm text-gray-600">Électeurs inscrits</span>
           </div>
         </div>
         <div className="mt-3 text-center text-sm text-gray-600">
-          Taux d'inscription: {((demographics.voterRegistration.registered / demographics.voterRegistration.population) * 100).toFixed(1)}%
+          Taux d'inscription : {((demographics.voterRegistration.registered / demographics.voterRegistration.population) * 100).toFixed(1)}%
         </div>
     </div>
       {/* Répartition electoral en genre */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4 text-center text-africa-primary">
-          Répartition électorale en genre
+          Répartition Électorale par Genre
         </h3>
         <div className="h-64">
             <Doughnut data={genderRatioData} options={chartOptions} />

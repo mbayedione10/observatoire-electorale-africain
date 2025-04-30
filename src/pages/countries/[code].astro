@@ -177,7 +177,7 @@ const keyStats = [
     color: "text-farafina-primary",
   },
   {
-    label: "Électeurs inscrits",
+    label: "Électeurs Inscrits",
     value: new Intl.NumberFormat("fr-FR").format(
       country.demographics?.voterRegistration?.registered || 0,
     ),
@@ -185,7 +185,7 @@ const keyStats = [
     color: "text-farafina-accent",
   },
   {
-    label: "Derniere élection",
+    label: "Dernière élection",
     value: electionEvents.find((e) => e.status === "Précédente")?.date
       ? new Date(
           electionEvents.find((e) => e.status === "Précédente")?.date || 0,
@@ -272,14 +272,17 @@ const recentArticles = [
     ]}
     client:load
   >
-    <FaGlobeAfrica class="text-farafina-primary text-3xl" slot="icon" />
+    <FaGlobeAfrica className="text-farafina-primary text-3xl" slot="icon" />
   </PageHeader>
 
   <div class="container mx-auto px-4 py-8">
     <!-- Bannière du pays avec drapeau et statistiques clés -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-      <div
+          <!-- <div
         class="relative h-40 bg-gradient-to-r from-farafina-primary to-farafina-secondary"
+      > -->
+      <div
+        class="relative h-40 bg-gradient-to-r from-[#00853F] to-[#E31B23]"
       >
         <div
           class="absolute inset-0 opacity-20"
@@ -317,7 +320,7 @@ const recentArticles = [
           keyStats.map((stat) => (
             <div class="flex items-center">
               <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
-                <stat.icon class={`text-xl ${stat.color}`} />
+                <stat.icon className={`text-xl ${stat.color}`} />
               </div>
               <div>
                 <span class="block text-sm text-gray-500">{stat.label}</span>
@@ -339,7 +342,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
           >
-            <FaGlobeAfrica class="mr-2" /> Localisation
+            <FaGlobeAfrica className="mr-2" /> Localisation
           </h2>
           <div class="h-[400px]">
             <AfricaMap client:load selectedCountry={country.code} />
@@ -367,7 +370,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
           >
-            <FaGlobeAfrica class="mr-2" /> Informations
+            <FaGlobeAfrica className="mr-2" /> Informations
           </h2>
           <CountryCard
             client:load
@@ -401,7 +404,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-secondary mb-6 flex items-center"
           >
-            <FaCalendarAlt class="mr-2" /> Prochaine Élection
+            <FaCalendarAlt className="mr-2" /> Prochaine Élection
           </h2>
 
           {
@@ -486,7 +489,7 @@ const recentArticles = [
         <h2
           class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
         >
-          <FaVoteYea class="mr-2" /> Système Électoral
+          <FaVoteYea className="mr-2" /> Système Électoral
         </h2>
         <div class="space-y-6">
           <div class="bg-farafina-primary/5 rounded-lg p-4">
@@ -499,7 +502,7 @@ const recentArticles = [
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Modèle de gestion des élections
+                Modèle de Gestion des Élections
               </h3>
               <p class="text-gray-700">{electoralOrganism.electoralModel}</p>
             </div>
@@ -513,7 +516,7 @@ const recentArticles = [
                     <li>
                       <a
                         href={eo?.siteweb}
-                        class="text-farafina-primary hover:underline"
+                        class="text-blue-600 underline hover:no-underline" 
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -529,7 +532,7 @@ const recentArticles = [
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Régime de vote présidentiel
+                Régime du vote présidentiel
               </h3>
               <p class="text-gray-700">
                 {electoralOrganism.vote.presidentialVote}
@@ -537,7 +540,7 @@ const recentArticles = [
             </div>
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Régime de vote legislatif
+                Régime de vote législatif
               </h3>
               <p class="text-gray-700">
                 {electoralOrganism.vote.legislativeVote}
@@ -555,7 +558,7 @@ const recentArticles = [
             </div>
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Gestion des contentieux électoraux
+                Gestion du contentieux électoral
               </h3>
               <p class="text-gray-700">
                 {electoralOrganism.vote.disputesManagementBody}
@@ -564,7 +567,7 @@ const recentArticles = [
           </div>
           <div class="bg-farafina-primary/5 rounded-lg p-4">
             <h3 class="font-semibold text-farafina-primary mb-2">
-              Resultats provisoire
+              Organe de proclamation des résultats provisoires
             </h3>
             <p class="text-gray-700">
               {electoralOrganism.vote.provisionalResultsBody}
@@ -573,7 +576,7 @@ const recentArticles = [
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Resultats definitifs presidentiels
+                Organe de proclamation des résultats présidentiels définitifs
               </h3>
               <p class="text-gray-700">
                 {electoralOrganism.vote.presidentialResults}
@@ -581,7 +584,7 @@ const recentArticles = [
             </div>
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Resultats definitifs legislatifs
+                Organe de proclamation des résultats législatifs définitifs
               </h3>
               <p class="text-gray-700">
                 {electoralOrganism.vote.legislativeResults}
@@ -618,7 +621,7 @@ const recentArticles = [
     <!-- Chronologie électorale -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-8">
       <h2 class="text-xl font-bold text-farafina-accent mb-6 flex items-center">
-        <FaCalendarAlt class="mr-2" /> Chronologie Électorale
+        <FaCalendarAlt className="mr-2" /> Chronologie Électorale
       </h2>
       <ElectionTimeline
         client:visible
@@ -631,13 +634,13 @@ const recentArticles = [
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold text-farafina-accent flex items-center">
-          <FaExclamationTriangle className="mr-2" /> Defis de la derniere election
+          <FaExclamationTriangle className="mr-2" /> Défis de la dernière élection
         </h2>
         <a
           href="/elections/challenges"
           class="text-farafina-accent hover:text-farafina-accent/80 transition-colors text-sm font-medium"
         >
-          Voir tous les defis →
+          Voir tous les défis →
         </a>
       </div>
 
