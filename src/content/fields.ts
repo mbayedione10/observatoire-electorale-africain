@@ -13,6 +13,7 @@ export const paysData = [
   "système_politique",
   "modèle_gestion_élections",
   "Organe de validation des candidatures",
+  "Organe validation candidatures législatives",
   "Régime de vote presidentiel",
   "Régime de vote legislative",
   "Organe de proclamation des résultats provisoires",
@@ -60,4 +61,22 @@ export const organismesElectorauxData = [
       "telephone",
       "email",
       "Pays_id",
+    ];
+
+export const organisationsData = [
+      "Id",
+      "nom",
+      "Statut",
+      "Type d’organisation -  institutions",
+      "nombre de pays couverts",
+      "ville",
+      "annee de creation",
+      "zones couvertes",
+      "domaines d'expertise",
+      "mobilisation observateurs",
+      "annee de creation",
+      "siteweb",
+      "telephone",
+      "email",
+      "nom_pays (from Pays)",
     ];

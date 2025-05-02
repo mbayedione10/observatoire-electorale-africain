@@ -1,6 +1,6 @@
 import { defineCollection, z, reference } from "astro:content";
 import { listTableRecords } from '../lib/api/nocodb';
-import { paysData, electionsData, resultatsElectionsData, defisData, organismesElectorauxData } from "./fields";
+import { paysData, electionsData, resultatsElectionsData, defisData, organismesElectorauxData, organisationsData } from "./fields";
 
 
 // Fonction utilitaire pour générer un slug à partir d’une chaîne
@@ -31,6 +31,7 @@ const pays = defineCollection({
       id: record["Id"].toString(),
       code: record["code"],
       name: record["nom_pays"],
+      langue: record["langues_officielles"] || "",
       population: parseInt(record["population"]) || 0,
       politicalSystem: record["système_politique"] || "",
       modele: record["modèle_gestion_élections"] || "",
@@ -40,6 +41,7 @@ const pays = defineCollection({
         legislativeVote: record["Régime de vote legislative"] || "",
         legislativeResults: record["Organe proclamation resultats definitifs Législative"] || "",
         validationBody: record["Organe de validation des candidatures"] || "",
+        legislativeValidationBody: record["Organe validation candidatures législatives"] || "",
         disputesManagementBody: record["Organe de gestion des contentieux électoraux"] || "",
         provisionalResultsBody: record["Organe de proclamation des résultats provisoires"] || "",
       },
@@ -70,6 +72,7 @@ const pays = defineCollection({
     id: z.string(),
     code: z.string(),
     name: z.string(),
+    langue: z.string(),
     population: z.number(),
     ressources: z.array(reference("ressources")).optional(),
     politicalSystem: z.string().optional(),
@@ -80,6 +83,7 @@ const pays = defineCollection({
       legislativeVote: z.string(),
       legislativeResults: z.string(),
       validationBody: z.string(),
+      legislativeValidationBody: z.string(),
       disputesManagementBody: z.string(),
       provisionalResultsBody: z.string(),
     }),
@@ -251,4 +255,49 @@ const organismesElectoraux = defineCollection({
   }),
 });
 
-export const collections = { pays, ressources, organismesElectoraux, defisElections, resultatsElections, elections };
+const organisations = defineCollection({
+  loader: async () => {
+    const tableId = "momxlikiol1qiwn";
+    const fields = organisationsData;
+    const params = {
+      where: "(Statut,eq,Vérifié)",
+      limit: "1000",
+    };
+    const records = await listTableRecords(tableId,fields, params);
+    return records.map((record) => ({
+      id: record["Id"].toString(),
+      nom: record["nom"] || "",
+      statut: record["Statut"] || "",
+      typeOrganisation: record["Type d’organisation -  institutions"] || "",
+      nombreDePaysCouverts: record["nombre de pays couverts"] || "",
+      ville: record["ville"] || "",
+      anneeDeCreation: record["annee de creation"] || 0,
+      zonesCouverts: record["zones couvertes"] || "",
+      domainesExpertise: record["domaines d'expertise"] || "",
+      mobilisationsObservateurs: record["mobilisation observateurs"] || "",
+      siteweb: record["siteweb"] || "",
+      telephone: record["telephone"] || "",
+      email: record["email"] || "",
+      pays: record["nom_pays (from Pays)"] ? record["nom_pays (from Pays)"].toString() : "",
+    }));
+  },
+  schema: z.object({
+    id: z.string(),
+    nom: z.string(),
+    statut: z.string(),
+    typeOrganisation: z.string(),
+    nombreDePaysCouverts: z.string(),
+    ville: z.string(),
+    anneeDeCreation: z.number(),
+    zonesCouverts: z.string(),
+    domainesExpertise: z.string(),
+    mobilisationsObservateurs: z.string(),
+    siteweb: z.string(),
+    telephone: z.string(),
+    email: z.string(),
+    pays: z.string(),
+  }),
+});
+
+
+export const collections = { pays, ressources, organisations, organismesElectoraux, defisElections, resultatsElections, elections };
