@@ -35,6 +35,7 @@ const pays = defineCollection({
       population: parseInt(record["population"]) || 0,
       politicalSystem: record["système_politique"] || "",
       modele: record["modèle_gestion_élections"] || "",
+      region: record["Zone geographique"] || "",
       vote: {
         presidentialVote: record["Régime de vote presidentiel"] || "",
         presidentialResults : record["Organe de proclamation des resultats definitifs Présidentiel"] || "",
@@ -77,6 +78,7 @@ const pays = defineCollection({
     ressources: z.array(reference("ressources")).optional(),
     politicalSystem: z.string().optional(),
     modele: z.string().optional(),
+    region: z.string().optional(),
     vote: z.object({
       presidentialVote: z.string(),
       presidentialResults: z.string(),
@@ -155,6 +157,8 @@ const elections = defineCollection({
       statut: record["statut"] || "",
       dateElection: record["date_élection"] || "",
       typeElection: record["type_élection"] || "",
+      nomPays: record["nom_pays"] || "",
+      code_pays: record["code_pays"] || "",
       Pays_id: record["Pays_id"] ? record["Pays_id"].toString() : "",
       resultats: [],
     }));
@@ -164,6 +168,8 @@ const elections = defineCollection({
     dateElection: z.string(),
     statut: z.string(),
     typeElection: z.string(),
+    nomPays: z.string(),
+    code_pays: z.string(),
     Pays_id: z.string(),
     resultats: z.array(reference("Résultats Élections")).optional(),
   }),

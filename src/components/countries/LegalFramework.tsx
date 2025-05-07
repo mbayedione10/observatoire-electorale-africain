@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFileAlt, FaLink, FaCalendarAlt, FaTools, FaMapMarkerAlt, FaBuilding, FaEnvelope, FaPhone, FaUsers } from 'react-icons/fa';
+import { FaFileAlt, FaLink, FaCalendarAlt, FaTools, FaMapMarkerAlt, FaBuilding, FaEnvelope, FaPhone, FaUsers, FaGlobe } from 'react-icons/fa';
 
     interface LegalDocument {
       title: string;
@@ -66,20 +66,20 @@ interface LegalFrameworkProps {
         <button
           className={`
             px-4 py-2 mr-2 
-            ${activeTab === 'documents' ? 'border-b-2 border-africa-secondary text-africa-secondary' : 'text-gray-600'}
+            ${activeTab === 'documents' ? 'border-b-2 border-africa-secondary bg-farafina-blue/10 text-africa-secondary' : 'text-gray-600 '}
           `}
           onClick={() => setActiveTab('documents')}
         >
-          Documents
+          Données système électoral
         </button>
         <button
           className={`
             px-4 py-2 mr-2 
-            ${activeTab === 'organisations' ? 'border-b-2 border-africa-secondary text-africa-secondary' : 'text-gray-600'}
+            ${activeTab === 'organisations' ? 'border-b-2  border-africa-secondary bg-farafina-blue/10 text-africa-secondary' : 'text-gray-600'}
           `}
           onClick={() => setActiveTab('organisations')}
         >
-          Organisations ({organisations.length})
+          Acteurs clés ({organisations.length})
         </button>
       </div>
 
@@ -164,16 +164,24 @@ interface LegalFrameworkProps {
             >
               ✕
             </button>
-            <h3 className="text-lg font-semibold text-black mb-4 inline-block">{selectedOrg.nom} - {selectedOrg.typeOrganisation}</h3>
+            <h3 className="text-lg font-semibold text-black text-center mb-5">{selectedOrg.nom}</h3>
             <div className="space-y-2 text-black">
               <p>
                 <FaMapMarkerAlt className="inline-block mr-2" />
                 <strong>Localisation:</strong> {selectedOrg.ville} - {selectedOrg.pays}
               </p>
               <p>
+                <FaGlobe className="inline-block mr-2" />
+                <strong>Zone couvert:</strong> {selectedOrg.zonesCouverts}
+              </p>
+              <p>
+                <FaBuilding className="inline-block mr-2" />
+                <strong>Type d'organisation:</strong> {selectedOrg.typeOrganisation}
+              </p>
+              <p>
                 <FaCalendarAlt className="inline-block mr-2" />
                 <strong>Année de Création:</strong> {selectedOrg.anneeDeCreation}{' '}
-                <span>({new Date().getFullYear() - selectedOrg.anneeDeCreation} ans d'existence)</span>
+                <span>({new Date().getFullYear() - selectedOrg.anneeDeCreation} année d'expertise)</span>
               </p>
               <p>
                 <FaTools className="inline-block mr-2" />

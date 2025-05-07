@@ -22,6 +22,7 @@ export const paysData = [
   "Organe proclamation resultats definitifs Législative",
   "Organes Gestion Electoraux",
   "Elections",
+  "Zone geographique",
   "Ressources",
   "Organisations",
 ];
@@ -31,6 +32,8 @@ export const electionsData = [
   "statut",
   "date_élection",
   "type_élection",
+  "nom_pays",
+  "code_pays",
   "Pays_id",
   "Résultats Élections",
   ];
@@ -66,6 +69,7 @@ export const organismesElectorauxData = [
 export const organisationsData = [
       "Id",
       "nom",
+      "zones couvertes",
       "Statut",
       "Type d’organisation -  institutions",
       "nombre de pays couverts",
