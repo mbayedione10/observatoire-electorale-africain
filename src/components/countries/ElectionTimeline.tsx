@@ -8,6 +8,7 @@ interface ElectionTimelineProps {
     status: 'Précédente' | 'À venir' | 'En préparation';
     turnout?: number;
     description: string;
+    vainqueur?: string;
   }[];
   countryName: string;
 }
@@ -54,7 +55,8 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
             key={index}
             className={`relative border-l-4 pl-6 pb-6 ${getStatusClass(event.status)}`}
           >
-            <div className="absolute -left-3 top-0 w-6 h-6 bg-white rounded-full border-5 border-africa-primary flex items-center justify-center">
+            <div className="absolute -left-3 top-0 w-8 h-8  bg-white rounded-full border-2 border-africa-primary flex items-center justify-center">
+
               {getStatusIcon(event.status)}
             </div>
 
@@ -62,7 +64,7 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-africa-primary">
-                    {event.type}
+                    {event.status === 'Précédente' ? `${event.type} - ${event.vainqueur || 'Inconnu'}` : event.type}
                   </h3>
                   <p className="text-gray-600">
                     {event.status === 'À venir' ? new Date(event.date).getFullYear().toString() : event.date}
