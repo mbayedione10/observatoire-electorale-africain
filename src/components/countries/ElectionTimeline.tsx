@@ -54,7 +54,7 @@ const ElectionTimeline: React.FC<ElectionTimelineProps> = ({ events, countryName
             key={index}
             className={`relative border-l-4 pl-6 pb-6 ${getStatusClass(event.status)}`}
           >
-            <div className="absolute -left-3 top-0 w-6 h-6 bg-white rounded-full border-4 border-africa-primary flex items-center justify-center">
+            <div className="absolute -left-3 top-0 w-6 h-6 bg-white rounded-full border-5 border-africa-primary flex items-center justify-center">
               {getStatusIcon(event.status)}
             </div>
 
