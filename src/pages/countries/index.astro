@@ -1,44 +1,105 @@
 ---
-import Layout from '../../layouts/MainLayout.astro';
-import CountriesHero from '../../components/countries/CountriesHero';
-import CountryList from '../../components/CountryList';
-import CountrySidebar from '../../components/countries/CountrySidebar';
-import AfricaMap from '../../components/countries/AfricaMap';
-import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from 'react-icons/fa';
+import Layout from "../../layouts/MainLayout.astro";
+import CountriesHero from "../../components/countries/CountriesHero";
+import CountryList from "../../components/CountryList";
+import CountrySidebar from "../../components/countries/CountrySidebar";
+import AfricaMap from "../../components/countries/AfricaMap";
+import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
 
-import { getCollection } from 'astro:content';
+import { getCollection } from "astro:content";
 
 // Récupérer les données des pays
-const pays = await getCollection('pays');
+const pays = await getCollection("pays");
+const elections = await getCollection("elections");
+const resultatsElections = await getCollection("resultatsElections");
 
 // Statistiques globales
-const totalPopulation = pays.reduce((sum, country) => sum + country.data.population, 0);
-const avgTurnout = pays.reduce((sum, country) => sum + (country.data.lastElection?.turnout || 0), 0) / pays.length;
-const upcomingElections = pays.filter(country => 
-  country.data.lastElection?.nextElectionYear && 
-  country.data.lastElection.nextElectionYear <= new Date().getFullYear() + 1
-).length;
+const totalPopulation = pays.reduce(
+  (sum, country) => sum + country.data.population,
+  0,
+);
+const totalVotes = resultatsElections.reduce(
+  (sum, resultat) => sum + (resultat.data?.participation || 0),
+  0,
+);
+const avgTurnout = (totalVotes / totalPopulation) * 100;
+
+const upcomingElections = elections
+  .filter(
+    (election) =>
+      election.data.statut === "En préparation" ||
+      election.data.statut === "À venirr",
+  )
+  .map((election) => ({
+    type: election.data.typeElection,
+    date: election.data.dateElection,
+    code: election.data.code_pays,
+    country: election.data.nomPays,
+    daysRemaining: Math.ceil(
+      (new Date(election.data.dateElection).getTime() - new Date().getTime()) /
+        (1000 * 60 * 60 * 24),
+    ),
+  }));
+
+const lastElections = elections
+  .filter((election) => election.data.statut === "Précédente")
+  .map((election) => ({
+    type: election.data.typeElection,
+    date: election.data.dateElection,
+    code: election.data.code_pays,
+    country: election.data.nomPays,
+    turnout: resultatsElections.find(
+      (resultat) => resultat.data.Elections_id === election.data.id,
+    )?.data.participation,
+    year: new Date(election.data.dateElection).getFullYear(),
+  }));
 
 // Regrouper les pays par région pour les statistiques
 const regions = [
-  "Afrique du Nord",
-  "Afrique de l'Ouest",
-  "Afrique Centrale",
-  "Afrique de l'Est",
-  "Afrique Australe"
+  {
+    name: "Afrique du Nord",
+    count: pays.filter((country) => country.data.region === "Nord").length,
+  },
+  {
+    name: "Afrique de l'Ouest",
+    count: pays.filter((country) => country.data.region === "Ouest").length,
+  },
+  {
+    name: "Afrique Centrale",
+    count: pays.filter((country) => country.data.region === "Centrale").length,
+  },
+  {
+    name: "Afrique de l'Est",
+    count: pays.filter((country) => country.data.region === "Est").length,
+  },
+  {
+    name: "Afrique Australe",
+    count: pays.filter((country) => country.data.region === "Australe").length,
+  },
 ];
 
-// Attribuer une région à chaque pays (simulation)
-const countriesByRegion = regions.map(region => {
-  const count = Math.floor(Math.random() * 15) + 5; // Entre 5 et 20 pays par région
-  return { region, count };
-});
-
-// Sélectionner quelques pays en vedette
-const featuredCountries = pays.slice(0, 3).map(country => ({
+const countriesWithLastElection = pays.map((country) => ({
   code: country.data.code,
   name: country.data.name,
-  lastElection: country.data.lastElection
+  population: country.data.population,
+  lastElection: {
+    type: lastElections.find((election) => election.code === country.data.code)
+      ?.type,
+    date: lastElections.find((election) => election.code === country.data.code)
+      ?.date,
+    turnout: lastElections.find(
+      (election) => election.code === country.data.code,
+    )?.turnout,
+    year: lastElections.find((election) => election.code === country.data.code)
+      ?.year,
+  },
+  politicalSystem: country.data.politicalSystem,
+  demographics: {
+    voterRegistration: {
+      population: country.data.population,
+      registered: country.data.demographics.voterRegistration.registered
+    },
+  },
 }));
 ---
 
@@ -54,35 +115,70 @@ const featuredCountries = pays.slice(0, 3).map(country => ({
           <div class="flex justify-center mb-3">
             <FaGlobeAfrica className="text-farafina-primary text-3xl" />
           </div>
-          <span class="block text-3xl font-bold text-farafina-primary">{pays.length}</span>
+          <span class="block text-3xl font-bold text-farafina-primary"
+            >{pays.length}</span
+          >
           <span class="text-gray-600">Pays africains</span>
         </div>
 
         <div class="bg-farafina-secondary/10 rounded-lg p-5 text-center">
           <div class="flex justify-center mb-3">
-            <FaUsers className="text-farafina-secondary text-3xl" />
+            <FaUsers className="text-farafina-accent text-3xl" />
           </div>
-          <span class="block text-3xl font-bold text-farafina-secondary">
-            {Math.round(totalPopulation / 1000000)}M
+          <span class="block text-3xl font-bold text-farafina-accent">
+            {
+              totalPopulation >= 1000000000
+                ? `${(totalPopulation / 1000000000).toFixed(1)}B`
+                : `${Math.round(totalPopulation / 1000000)}M`
+            }
           </span>
           <span class="text-gray-600">Population totale</span>
         </div>
 
         <div class="bg-farafina-accent/10 rounded-lg p-5 text-center">
           <div class="flex justify-center mb-3">
-            <FaVoteYea className="text-farafina-accent text-3xl" />
+            <FaVoteYea className="text-farafina-secondary text-3xl" />
           </div>
-          <span class="block text-3xl font-bold text-farafina-accent">{upcomingElections}</span>
+          <span class="block text-3xl font-bold text-farafina-secondary">
+            {
+              upcomingElections.length > 0 &&
+                (() => {
+                  const closestElection = upcomingElections[0];
+                  return (
+                    <span>
+                      {closestElection.type} {closestElection.country}
+                      {new Date(closestElection.date).toLocaleDateString(
+                        "fr-FR",
+                        { day: "numeric", month: "numeric", year: "numeric" },
+                      )}
+                    </span>
+                  );
+                })()
+            }
+          </span>
           <span class="text-gray-600">Élections à venir</span>
         </div>
 
         <div class="bg-farafina-blue/10 rounded-lg p-5 text-center">
           <div class="flex justify-center mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-farafina-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-farafina-blue"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
             </svg>
           </div>
-          <span class="block text-3xl font-bold text-farafina-blue">{avgTurnout.toFixed(1)}%</span>
+          <span class="block text-3xl font-bold text-farafina-blue"
+            >{avgTurnout.toFixed(1)}%</span
+          >
           <span class="text-gray-600">Participation moyenne</span>
         </div>
       </div>
@@ -91,51 +187,86 @@ const featuredCountries = pays.slice(0, 3).map(country => ({
     <!-- Carte interactive et pays en vedette -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
       <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
-        <h2 class="text-2xl font-bold text-farafina-dark mb-6">Carte des pays africains</h2>
+        <h2 class="text-2xl font-bold text-farafina-dark mb-6">
+          Carte des pays africains
+        </h2>
         <div class="h-[400px] mb-6">
           <AfricaMap client:load />
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {countriesByRegion.map(region => (
-            <div class="bg-gray-50 rounded-lg p-3 text-center">
-              <h3 class="font-medium text-farafina-dark text-sm mb-2">{region.region}</h3>
-              <div class="text-lg font-bold text-farafina-primary">{region.count}</div>
-              <div class="text-xs text-gray-500">pays</div>
-            </div>
-          ))}
+          {
+            regions.map((region) => (
+              <div class="bg-gray-50 rounded-lg p-3 text-center">
+                <h3 class="font-medium text-farafina-dark text-sm mb-2">
+                  {region.name}
+                </h3>
+                <div class="text-lg font-bold text-farafina-primary">
+                  {region.count}
+                </div>
+                <div class="text-xs text-gray-500">pays</div>
+              </div>
+            ))
+          }
         </div>
       </div>
 
       <div class="bg-white rounded-xl shadow-md p-6">
-        <h2 class="text-2xl font-bold text-farafina-dark mb-6">Pays en vedette</h2>
+        <h2 class="text-2xl font-bold text-farafina-dark mb-6">
+          Pays en vedette
+        </h2>
         <div class="space-y-4">
-          {featuredCountries.map(country => (
-            <a href={`/countries/${country.code.toLowerCase()}`} class="block p-4 bg-gray-50 rounded-lg hover:bg-farafina-primary/5 transition-colors">
-              <div class="flex items-center">
-                <img 
-                  src={`https://flagcdn.com/48x36/${country.code.toLowerCase()}.png`} 
-                  alt={`Drapeau ${country.name}`} 
-                  class="w-10 h-6 mr-3"
-                />
-                <div>
-                  <h3 class="font-semibold text-farafina-dark">{country.name}</h3>
-                  <div class="text-sm text-gray-600">
-                    Prochaine élection: {country.lastElection.nextElectionYear}
+          {
+            upcomingElections.slice(0, 3).map((country) => (
+              <a
+                href={`/countries/${country.code.toLowerCase()}`}
+                class="block p-4 bg-gray-50 rounded-lg hover:bg-farafina-primary/5 transition-colors"
+              >
+                <div class="flex items-center">
+                  <img
+                    src={`https://flagcdn.com/48x36/${country.code.toLowerCase()}.png`}
+                    alt={`Drapeau ${country.country}`}
+                    class="w-10 h-6 mr-3"
+                  />
+                  <div>
+                    <h3 class="font-semibold text-farafina-dark">
+                      {country.country} - {country.type}
+                    </h3>
+                    <div class="text-sm text-gray-600">
+                      {country.date ? (
+                        <>
+                          Prochaine élection:{" "}
+                          {new Date(country.date).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "numeric",
+                            year: "numeric",
+                          })}
+                          {country.daysRemaining > 0
+                            ? ` (${country.daysRemaining} jours restants)`
+                            : ""}
+                        </>
+                      ) : (
+                        "Aucune élection programmée"
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))
+          }
         </div>
         <div class="mt-6 pt-6 border-t border-gray-100">
-          <h3 class="font-semibold text-farafina-dark mb-4">Recherche rapide</h3>
+          <h3 class="font-semibold text-farafina-dark mb-4">
+            Recherche rapide
+          </h3>
           <div class="relative">
             <input
               type="text"
               placeholder="Rechercher un pays..."
               class="w-full py-2 pl-10 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-farafina-primary focus:border-transparent"
             />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FaSearch
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            />
           </div>
         </div>
       </div>
@@ -143,36 +274,50 @@ const featuredCountries = pays.slice(0, 3).map(country => ({
 
     <!-- Liste des pays avec filtres -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-12">
-      <h2 class="text-2xl font-bold text-farafina-dark mb-6">Explorer tous les pays</h2>
+      <h2 class="text-2xl font-bold text-farafina-dark mb-6">
+        Explorer tous les pays
+      </h2>
       <div class="flex flex-col lg:flex-row gap-8">
         <div class="lg:w-1/4">
           <CountrySidebar client:load />
         </div>
         <div class="lg:w-3/4">
-          <CountryList countries={pays.map(country => country.data)} />
+            <CountryList countries={countriesWithLastElection.map((country) => ({
+            ...country,
+            lastElection: {
+              ...country.lastElection,
+              turnout: country.lastElection.turnout || 0,
+            },
+            }))} />
         </div>
       </div>
     </div>
 
     <!-- Ressources et outils -->
-    <div class="bg-gradient-to-r from-farafina-primary to-farafina-secondary rounded-xl shadow-md overflow-hidden">
+    <div
+      class="bg-gradient-to-r from-farafina-primary to-farafina-secondary rounded-xl shadow-md overflow-hidden"
+    >
       <div class="grid grid-cols-1 md:grid-cols-2">
         <div class="p-8 text-white">
-          <h2 class="text-2xl font-bold mb-4">Ressources sur les systèmes électoraux</h2>
+          <h2 class="text-2xl font-bold mb-4">
+            Ressources sur les systèmes électoraux
+          </h2>
           <p class="mb-6 text-white/90">
-            Accédez à notre base de données complète sur les cadres juridiques, les systèmes électoraux et les données démographiques des pays africains.
+            Accédez à notre base de données complète sur les cadres juridiques,
+            les systèmes électoraux et les données démographiques des pays
+            africains.
           </p>
-          <a 
-            href="/resources" 
+          <a
+            href="/resources"
             class="inline-block px-6 py-3 bg-white text-farafina-primary font-medium rounded-lg hover:bg-white/90 transition-colors"
           >
             Explorer les ressources
           </a>
         </div>
         <div class="hidden md:block relative">
-          <img 
-            src="/placeholder.svg?height=300&width=400" 
-            alt="Ressources électorales" 
+          <img
+            src="/placeholder.svg?height=300&width=400"
+            alt="Ressources électorales"
             class="w-full h-full object-cover"
           />
           <div class="absolute inset-0 bg-black/20"></div>

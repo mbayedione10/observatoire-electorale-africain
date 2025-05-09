@@ -5,18 +5,18 @@ interface Country {
   code: string;
   name: string;
   population: number;
-  lastElection: {
-    type: string;
-    year: number;
-    turnout: number;
-    nextElectionYear: number;
-  };
-  politicalSystem: string;
+  politicalSystem?: string;
   demographics: {
     voterRegistration: {
+      population: number;
       registered: number;
-      eligible: number;
     };
+  };
+  lastElection: {
+    turnout: number;
+    type?: string;
+    date?: string;
+    year?: number;
   };
 }
 
