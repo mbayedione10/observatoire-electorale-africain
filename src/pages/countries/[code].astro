@@ -1,14 +1,12 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/MainLayout.astro";
-import Breadcrumbs from "../../components/Breadcrumbs.tsx";
 import PageHeader from "../../components/PageHeader.tsx";
 import CountryCard from "../../components/countries/CountryCard.tsx";
 import DemographicChart from "../../components/countries/DemographicChart.tsx";
 import LegalFramework from "../../components/countries/LegalFramework.tsx";
 import ElectionTimeline from "../../components/countries/ElectionTimeline.tsx";
 import AfricaMap from "../../components/countries/AfricaMap.tsx";
-import countriesData from "../../data/countries-extended.json";
 import ToCountryLink from "@/components/common/ToCountryLink.astro";
 import {
   FaGlobeAfrica,
@@ -17,7 +15,6 @@ import {
   FaUsers,
   FaChartBar,
   FaCalendarAlt,
-  FaNewspaper,
   FaExclamationTriangle,
   FaTwitter,
   FaLinkedin,
@@ -189,6 +186,24 @@ const upcomingElections = [
   },
 ];
 
+const CountryInterface = {
+  code: country.code,
+  name: country.name,
+  population: country.population,
+  lastElection: {
+    type: electionEvents.find((e) => e.status === "Précédente")?.type || "N/A",
+    year: new Date(
+      electionEvents.find((e) => e.status === "Précédente")?.date || 0,
+    ).getFullYear(),
+    turnout:
+      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
+    nextElectionYear: upcomingElections[0]?.date
+      ? new Date(upcomingElections[0].date).getFullYear()
+      : 0,
+  },
+  politicalSystem: country.politicalSystem || "",
+  demographics: country.demographics,
+};
 // Données pour les statistiques clés
 const keyStats = [
   {
@@ -250,7 +265,6 @@ const socialLinks = [
     icon: FaLinkedin,
   },
   {
-    name: "Facebook",
     href: (code: string, name: string) =>
       `https://www.facebook.com/sharer/sharer.php?u=https://farafina.tech/countries/${code}`,
     title: "Partager sur Facebook",
@@ -391,31 +405,7 @@ const recentArticles = [
           >
             <FaGlobeAfrica className="mr-2" /> Informations
           </h2>
-          <CountryCard
-            client:load
-            country={{
-              code: country.code,
-              name: country.name,
-              population: country.population,
-              lastElection: {
-                type:
-                  electionEvents.find((e) => e.status === "Précédente")?.type ||
-                  "N/A",
-                year: new Date(
-                  electionEvents.find((e) => e.status === "Précédente")?.date ||
-                    0,
-                ).getFullYear(),
-                turnout:
-                  electionEvents.find((e) => e.status === "Précédente")
-                    ?.turnout || 0,
-                nextElectionYear: upcomingElections[0]?.date
-                  ? new Date(upcomingElections[0].date).getFullYear()
-                  : 0,
-              },
-              politicalSystem: country.politicalSystem || "",
-              demographics: country.demographics,
-            }}
-          />
+          <CountryCard client:load country={CountryInterface} />
         </div>
 
         <!-- Élections à venir -->
@@ -686,7 +676,7 @@ const recentArticles = [
             event.defis.map((challenge) => (
               <div
                 key={challenge.libelle}
-                class="border border-gray-100 rounded-lg p-5 hover:shadow-md transition-shadow"
+                class="border border-red-100 rounded-lg p-5 hover:shadow-md transition-shadow"
               >
                 <div class="grid grid-cols-3 gap-6">
                   <p class="font-medium text-farafina-accent">
