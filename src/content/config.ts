@@ -37,9 +37,9 @@ const pays = defineCollection({
       modele: record["modèle_gestion_élections"] || "",
       region: record["Zone geographique"] || "",
       vote: {
-        presidentialVote: record["Régime de vote presidentiel"] || "",
+        presidentialVote: record["Présidentiel - Régime de vote"] || "",
         presidentialResults : record["Organe de proclamation des resultats definitifs Présidentiel"] || "",
-        legislativeVote: record["Régime de vote legislative"] || "",
+        legislativeVote: record["Legislative - Régime de vote"] || "",
         legislativeResults: record["Organe proclamation resultats definitifs Législative"] || "",
         validationBody: record["Organe de validation des candidatures"] || "",
         legislativeValidationBody: record["Organe validation candidatures législatives"] || "",
