@@ -150,8 +150,8 @@ const elections = defineCollection({
     const fields = electionsData;
     const params = {
       where: "(type_élection,notnull)",
+      sort: "date_élection",
       limit: "1000",
-      sort: "-date_élection",
     };
     const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
