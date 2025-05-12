@@ -118,6 +118,7 @@ const ressources = defineCollection({
     const tableId = "m1s9f82k61alcst";
     const params = {
       where: "(type_donnée,notnull)",
+      limit: "1000",
       sort: "année",
     };
     const records = await listTableRecords(tableId, params);
@@ -149,6 +150,7 @@ const elections = defineCollection({
     const fields = electionsData;
     const params = {
       where: "(type_élection,notnull)",
+      limit: "1000",
       sort: "-date_élection",
     };
     const records = await listTableRecords(tableId, fields, params);
@@ -182,6 +184,7 @@ const resultatsElections = defineCollection({
     const fields = resultatsElectionsData;
     const params = {
       where: "(résultats,notnull)",
+      limit: "1000",
     };
     const records = await listTableRecords(tableId, fields, params);
     return records.map((record) => ({
