@@ -1,11 +1,17 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import pagefind from "astro-pagefind";
 
 export default defineConfig({
+  output: "static",
+  build: {
+    format: "file",
+  },
   integrations: [
     react(),
-    tailwind()
+    tailwind(),
+    pagefind()
   ],
   output: 'static',
   vite: {

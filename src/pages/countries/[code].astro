@@ -50,9 +50,13 @@ const organismes = organismesElectoraux?.filter(
   (organisme) => organisme.data.Pays_id === country.id,
 );
 
-const electionEvents3 = elections?.filter(
-  (election) => election.data.Pays_id === country.id,
-);
+const electionEvents3 = elections
+  ?.filter((election) => election.data.Pays_id === country.id)
+  .sort((a, b) => {
+    const dateA = new Date(a.data.dateElection).getTime();
+    const dateB = new Date(b.data.dateElection).getTime();
+    return dateB - dateA;
+  });
 
 const organisation = organisations
   .filter((organisation) => organisation.data.pays === country.name)
@@ -310,7 +314,7 @@ const recentArticles = [
     <FaGlobeAfrica className="text-farafina-primary text-3xl" slot="icon" />
   </PageHeader>
 
-  <div class="container mx-auto px-4 py-8">
+  <div data-pagefind-filter="section:Pays" class="container mx-auto px-4 py-8">
     <!-- Bannière du pays avec drapeau et statistiques clés -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
       <!-- <div
@@ -330,7 +334,9 @@ const recentArticles = [
               class="w-24 h-16 object-cover rounded shadow-md mr-6"
             />
             <div class="text-white">
-              <h1 class="text-3xl font-bold">{country.name}</h1>
+              <h1 data-pagefind-index class="text-3xl font-bold">
+                {country.name}
+              </h1>
               <p class="text-white/80">Langues officielles: {country.langue}</p>
             </div>
           </div>

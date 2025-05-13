@@ -1,0 +1,37 @@
+---
+// CountriesHero.astro
+import { FaGlobeAfrica } from "react-icons/fa";
+import Search from "astro-pagefind/components/Search";
+---
+
+<section class="pt-28 pb-12 bg-gray-50 border-b border-gray-200">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-farafina-primary/10 rounded-full mb-4"
+      >
+        <FaGlobeAfrica className="text-farafina-primary text-3xl" client:load />
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-farafina-dark mb-4">
+        Profils des Pays Africains
+      </h1>
+      <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+        Explorez les systèmes électoraux, les cadres juridiques et les données
+        démographiques des pays africains.
+      </p>
+      <div class="relative max-w-xl mx-auto">
+        <Search
+          id="search-countries"
+          className="mb-5 pagefind-ui-border pagefind-ui-shadow pagefind-ui-rounded"
+          uiOptions={{
+            showImages: true,
+            translations: { placeholder: "Rechercher un pays africain" },
+            filters: { section: "Pays" },
+            showSubResults: false,
+          }}
+          data-pagefind-filter="section:Pays"
+        />
+      </div>
+    </div>
+  </div>
+</section>
