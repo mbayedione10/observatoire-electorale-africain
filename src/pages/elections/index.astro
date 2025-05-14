@@ -36,6 +36,7 @@ const recentElections = elections
     return {
       ...election.data,
       participation: resultats?.data.participation || 0,
+      electeur: resultats?.data.electeur || 0,
       resultats: resultats?.data.resultats || ''
     };
   });
@@ -63,14 +64,15 @@ elections.forEach(election => {
   if (type) type.count++;
 });
 
-// Sélectionner les défis électoraux
+// Sélectionner un groupe aléatoire de défis électoraux
 const keyElectoralChallenges = defisElections
+  .sort(() => 0.5 - Math.random())
   .slice(0, 2)
   .map(defi => ({
-    country: defi.data.ResultatsElections,
+    country: defi.data.nomPays,
     type: defi.data.typeDefi,
     description: defi.data.libelleDefis,
-    status: "En cours"
+    status: "Critique"
   }));
 
 function getStatusColorClass(status: string) {
@@ -154,7 +156,7 @@ function getStatusColorClass(status: string) {
                   <span class="text-sm text-gray-600">{election.typeElection}</span>
                   <div class="flex items-center">
                     <span class="text-sm font-medium text-farafina-secondary mr-2">Participation:</span>
-                    <span class="text-sm">{election.participation}%</span>
+                    <span class="text-sm">{((election.participation / election.electeur) * 100).toFixed(2)}%</span>
                   </div>
                 </div>
                 <div class="mt-2 text-sm text-gray-700">
@@ -275,9 +277,9 @@ function getStatusColorClass(status: string) {
             </div>
             <div class="bg-gray-50 rounded-lg p-3 text-center">
               <span class="block text-2xl font-bold text-farafina-blue">
-                {(resultatsElections.reduce((acc, r) => acc + r.data.participation, 0) / resultatsElections.length).toFixed(1)}%
+                {((resultatsElections.reduce((acc, r) => acc + r.data.participation, 0) / resultatsElections.reduce((acc, r) => acc + r.data.population, 0)) * 100).toFixed(1)}%
               </span>
-              <span class="text-sm text-gray-600">Taux de participation moyen</span>
+              <span class="text-sm text-gray-600">Pourcentage de participation</span>
             </div>
           </div>
         </div>
