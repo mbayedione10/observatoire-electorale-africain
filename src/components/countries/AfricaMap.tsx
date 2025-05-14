@@ -6,7 +6,6 @@ const geoUrl = "/africa.json";
 
 interface AfricaMapProps {
   selectedRegion?: string | null;
-  onRegionClick?: (region: string) => void;
 }
 
 const countryToRegion = {
@@ -34,7 +33,8 @@ const regionColors = {
   "Australe": "#9b59b6"
 };
 
-const AfricaMap: React.FC<AfricaMapProps> = ({ selectedRegion, onRegionClick }) => {
+const AfricaMap: React.FC<AfricaMapProps> = ({ selectedRegion }) => {
+  const [activeRegion, setActiveRegion] = React.useState<string | null>(selectedRegion || null);
   return (
     <div className="relative w-full h-[400px] bg-gray-50 rounded-lg overflow-hidden">
       <ComposableMap
@@ -56,8 +56,8 @@ const AfricaMap: React.FC<AfricaMapProps> = ({ selectedRegion, onRegionClick }) 
                   key={geo.rsmKey}
                   geography={geo}
                   onClick={() => {
-                    if (onRegionClick && region) {
-                      onRegionClick(region);
+                    if (region) {
+                      setActiveRegion(region === activeRegion ? null : region);
                     }
                   }}
                   fill={region ? regionColors[region] : "#ccc"}

@@ -2,10 +2,11 @@
 ---
 import Layout from '../../layouts/MainLayout.astro';
 import ElectionsHero from '../../components/elections/ElectionsHero.astro';
-import AfricaMap from '../../components/countries/AfricaMap';
+import AfricaMap from '../../components/countries/AfricaMap.tsx';
 
 import { FaVoteYea, FaCalendarAlt, FaChartBar, FaExclamationTriangle, FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
 import { getCollection } from 'astro:content';
+import { useState } from 'react';
 
 // Récupérer les données des collections
 const elections = await getCollection('elections');
@@ -238,9 +239,7 @@ function getStatusColorClass(status: string) {
       <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
         <h2 class="text-2xl font-bold text-farafina-dark mb-6">Élections par région</h2>
         <div class="h-[400px] mb-6">
-          <AfricaMap client:load selectedRegion={null} onRegionClick={(region) => {
-            console.log("Selected region:", region);
-          }} />
+          <AfricaMap client:load selectedRegion={null} />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
           {electionsByRegion.map(region => (
