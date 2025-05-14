@@ -1,3 +1,13 @@
+
+---
+import Layout from "../../layouts/MainLayout.astro";
+import CountryList from "../../components/CountryList";
+import FilterSidebar from "../../components/common/FilterSidebar";
+import AfricaMap from "../../components/countries/AfricaMap";
+import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
+import CountriesHero from "@/components/countries/CountriesHero.astro";
+import ReactDOM from 'react-dom/client';
+
 ---
 import Layout from "../../layouts/MainLayout.astro";
 import CountryList from "../../components/CountryList";
@@ -300,7 +310,7 @@ const countriesWithLastElection = pays.map((country) => ({
               
               if (filters.region?.length > 0) {
                 const normalizedRegion = country.region?.toLowerCase().replace("afrique ", "");
-                matches = matches && filters.region.some(r => normalizedRegion?.includes(r));
+                matches = matches && filters.region.some(r => normalizedRegion?.includes(r.toLowerCase()));
               }
               
               if (filters.electionType?.length > 0) {
@@ -317,34 +327,12 @@ const countriesWithLastElection = pays.map((country) => ({
               
               return matches;
             });
-            
+
             const countryListElement = document.querySelector('#country-list');
             if (countryListElement) {
-              while (countryListElement.firstChild) {
-                countryListElement.removeChild(countryListElement.firstChild);
-              }
-              const newList = document.createElement('div');
-              newList.innerHTML = `<div class="container mx-auto px-4 py-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  ${filteredCountries.map(country => `
-                    <a href="/countries/${country.code.toLowerCase()}" class="block">
-                      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                        <div class="flex items-center mb-4">
-                          <img src="https://flagcdn.com/48x36/${country.code.toLowerCase()}.webp" alt="${country.name}" class="w-8 h-6 mr-3"/>
-                          <h3 class="text-lg font-semibold text-gray-900">${country.name}</h3>
-                        </div>
-                        <div class="space-y-2 text-sm text-gray-600">
-                          <p>Population: ${new Intl.NumberFormat('fr-FR').format(country.population)}</p>
-                          ${country.lastElection?.type ? `
-                            <p>Dernière élection: ${country.lastElection.type} (${country.lastElection.year})</p>
-                          ` : ''}
-                        </div>
-                      </div>
-                    </a>
-                  `).join('')}
-                </div>
-              </div>`;
-              countryListElement.appendChild(newList);
+              const CountryListComponent = CountryList({ countries: filteredCountries });
+              const root = ReactDOM.createRoot(countryListElement);
+              root.render(CountryListComponent);
             }
           }}
         />
