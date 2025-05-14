@@ -1,13 +1,7 @@
-
 ---
 import Layout from "../../layouts/MainLayout.astro";
 import CountryList from "../../components/CountryList";
-import FilterSidebar from "../../components/common/FilterSidebar";
-import AfricaMap from "../../components/countries/AfricaMap";
-import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
-import CountriesHero from "@/components/countries/CountriesHero.astro";
-import ReactDOM from 'react-dom/client';
-import FilterSidebar from "../../components/common/FilterSidebar";
+import CountrySidebar from "../../components/countries/CountrySidebar";
 import AfricaMap from "../../components/countries/AfricaMap";
 import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
 import CountriesHero from "@/components/countries/CountriesHero.astro";
@@ -94,7 +88,6 @@ const countriesWithLastElection = pays.map((country) => ({
   code: country.data.code,
   name: country.data.name,
   population: country.data.population,
-  region: country.data.region,
   lastElection: {
     type: lastElections.find((election) => election.code === country.data.code)
       ?.type,
@@ -278,62 +271,9 @@ const countriesWithLastElection = pays.map((country) => ({
     </h2>
     <div class="flex flex-col lg:flex-row gap-8">
       <div class="lg:w-1/4">
-        <FilterSidebar
-          client:load
-          sections={[
-            {
-              title: "Régions",
-              name: "region",
-              options: regions.map(r => ({ 
-                label: r.name,
-                value: r.name.toLowerCase(),
-                count: r.count
-              }))
-            },
-            {
-              title: "Type d'Élection",
-              name: "electionType",
-              options: [
-                { label: "Présidentielle", value: "presidential", count: lastElections.filter(e => e.type === "Présidentielle").length },
-                { label: "Législative", value: "legislative", count: lastElections.filter(e => e.type === "Législative").length },
-                { label: "Municipale", value: "municipal", count: lastElections.filter(e => e.type === "Municipale").length }
-              ]
-            }
-          ]}
-          onFilterChange={(filters) => {
-            const filteredCountries = countriesWithLastElection.filter(country => {
-              let matches = true;
-              
-              if (filters.region?.length > 0) {
-                const normalizedRegion = country.region?.toLowerCase().replace("afrique ", "");
-                matches = matches && filters.region.some(r => normalizedRegion?.includes(r.toLowerCase()));
-              }
-              
-              if (filters.electionType?.length > 0) {
-                const normalizedType = country.lastElection?.type?.toLowerCase();
-                matches = matches && filters.electionType.some(t => {
-                  switch(t) {
-                    case 'presidential': return normalizedType === 'présidentielle';
-                    case 'legislative': return normalizedType === 'législative';
-                    case 'municipal': return normalizedType === 'municipale';
-                    default: return false;
-                  }
-                });
-              }
-              
-              return matches;
-            });
-
-            const countryListElement = document.querySelector('#country-list');
-            if (countryListElement) {
-              const CountryListComponent = CountryList({ countries: filteredCountries });
-              const root = ReactDOM.createRoot(countryListElement);
-              root.render(CountryListComponent);
-            }
-          }}
-        />
+        <CountrySidebar client:load />
       </div>
-      <div class="lg:w-3/4" id="country-list">
+      <div class="lg:w-3/4">
         <CountryList
           countries={countriesWithLastElection.map((country) => ({
             ...country,
