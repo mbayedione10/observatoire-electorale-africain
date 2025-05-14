@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/MainLayout.astro";
 import CountryList from "../../components/CountryList";
-import CountrySidebar from "../../components/countries/CountrySidebar";
+import FilterSidebar from "../../components/common/FilterSidebar";
 import AfricaMap from "../../components/countries/AfricaMap";
 import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
 import CountriesHero from "@/components/countries/CountriesHero.astro";
@@ -88,6 +88,7 @@ const countriesWithLastElection = pays.map((country) => ({
   code: country.data.code,
   name: country.data.name,
   population: country.data.population,
+  region: country.data.region,
   lastElection: {
     type: lastElections.find((election) => election.code === country.data.code)
       ?.type,
@@ -271,9 +272,75 @@ const countriesWithLastElection = pays.map((country) => ({
     </h2>
     <div class="flex flex-col lg:flex-row gap-8">
       <div class="lg:w-1/4">
-        <CountrySidebar client:load />
+        <FilterSidebar
+          client:load
+          sections={[
+            {
+              title: "Régions",
+              name: "region",
+              options: regions.map(r => ({ 
+                label: r.name,
+                value: r.name.toLowerCase(),
+                count: r.count
+              }))
+            },
+            {
+              title: "Type d'Élection",
+              name: "electionType",
+              options: [
+                { label: "Présidentielle", value: "presidential", count: lastElections.filter(e => e.type === "Présidentielle").length },
+                { label: "Législative", value: "legislative", count: lastElections.filter(e => e.type === "Législative").length },
+                { label: "Municipale", value: "municipal", count: lastElections.filter(e => e.type === "Municipale").length }
+              ]
+            }
+          ]}
+          onFilterChange={(filters) => {
+            const filteredCountries = countriesWithLastElection.filter(country => {
+              let matches = true;
+              
+              if (filters.region?.length > 0) {
+                matches = matches && filters.region.includes(country.region?.toLowerCase());
+              }
+              
+              if (filters.electionType?.length > 0) {
+                matches = matches && filters.electionType.includes(country.lastElection?.type?.toLowerCase());
+              }
+              
+              return matches;
+            });
+            
+            const countryListElement = document.querySelector('#country-list');
+            if (countryListElement) {
+              while (countryListElement.firstChild) {
+                countryListElement.removeChild(countryListElement.firstChild);
+              }
+              const newList = document.createElement('div');
+              newList.innerHTML = `<div class="container mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  ${filteredCountries.map(country => `
+                    <a href="/countries/${country.code.toLowerCase()}" class="block">
+                      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                          <img src="https://flagcdn.com/48x36/${country.code.toLowerCase()}.webp" alt="${country.name}" class="w-8 h-6 mr-3"/>
+                          <h3 class="text-lg font-semibold text-gray-900">${country.name}</h3>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-600">
+                          <p>Population: ${new Intl.NumberFormat('fr-FR').format(country.population)}</p>
+                          ${country.lastElection?.type ? `
+                            <p>Dernière élection: ${country.lastElection.type} (${country.lastElection.year})</p>
+                          ` : ''}
+                        </div>
+                      </div>
+                    </a>
+                  `).join('')}
+                </div>
+              </div>`;
+              countryListElement.appendChild(newList);
+            }
+          }}
+        />
       </div>
-      <div class="lg:w-3/4">
+      <div class="lg:w-3/4" id="country-list">
         <CountryList
           countries={countriesWithLastElection.map((country) => ({
             ...country,
