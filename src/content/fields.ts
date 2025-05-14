@@ -33,6 +33,7 @@ export const electionsData = [
   "date_élection",
   "type_élection",
   "nom_pays",
+  "zone",
   "code_pays",
   "Pays_id",
   "Résultats Élections",

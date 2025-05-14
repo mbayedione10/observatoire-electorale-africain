@@ -43,19 +43,39 @@ const recentElections = elections
 
 // Statistiques par région
 const electionsByRegion = [
-  { region: "Afrique du Nord", upcoming: 0, recent: 0 },
-  { region: "Afrique de l'Ouest", upcoming: 0, recent: 0 },
-  { region: "Afrique Centrale", upcoming: 0, recent: 0 },
-  { region: "Afrique de l'Est", upcoming: 0, recent: 0 },
-  { region: "Afrique Australe", upcoming: 0, recent: 0 }
+  {
+    region: "Afrique du Nord",
+    upcoming: elections.filter(e => e.data.region === "Nord" && (e.data.statut === "En préparation" || e.data.statut === "À venir")).length,
+    recent: elections.filter(e => e.data.region === "Nord" && e.data.statut === "Précédente").length
+  },
+  {
+    region: "Afrique de l'Ouest",
+    upcoming: elections.filter(e => e.data.region === "Ouest" && (e.data.statut === "En préparation" || e.data.statut === "À venir")).length,
+    recent: elections.filter(e => e.data.region === "Ouest" && e.data.statut === "Précédente").length
+  },
+  {
+    region: "Afrique Centrale",
+    upcoming: elections.filter(e => e.data.region === "Centrale" && (e.data.statut === "En préparation" || e.data.statut === "À venir")).length,
+    recent: elections.filter(e => e.data.region === "Centrale" && e.data.statut === "Précédente").length
+  },
+  {
+    region: "Afrique de l'Est",
+    upcoming: elections.filter(e => e.data.region === "Est" && (e.data.statut === "En préparation" || e.data.statut === "À venir")).length,
+    recent: elections.filter(e => e.data.region === "Est" && e.data.statut === "Précédente").length
+  },
+  {
+    region: "Afrique Australe",
+    upcoming: elections.filter(e => e.data.region === "Australe" && (e.data.statut === "En préparation" || e.data.statut === "À venir")).length,
+    recent: elections.filter(e => e.data.region === "Australe" && e.data.statut === "Précédente").length
+  }
 ];
 
 // Types d'élections
 const electionTypesConfig = [
   { type: "Présidentielle", color: "bg-farafina-primary" },
   { type: "Législative", color: "bg-farafina-secondary" },
-  { type: "Locales", color: "bg-farafina-accent" },
-  { type: "Référendum", color: "bg-farafina-blue" }
+  { type: "Générale", color: "bg-farafina-accent" },
+  { type: "Referendum", color: "bg-farafina-blue" }
 ];
 
 const electionTypes = electionTypesConfig.map(config => ({
@@ -276,7 +296,10 @@ function getStatusColorClass(status: string) {
             </div>
             <div class="bg-gray-50 rounded-lg p-3 text-center">
               <span class="block text-2xl font-bold text-farafina-blue">
-                {((resultatsElections.reduce((acc, r) => acc + r.data.participation, 0) / resultatsElections.reduce((acc, r) => acc + r.data.population, 0)) * 100).toFixed(1)}%
+                {((
+                  resultatsElections.reduce((acc, r) => acc + r.data.participation, 0) / 
+                  resultatsElections.reduce((acc, r) => acc + r.data.electeur, 0)
+                ) * 100).toFixed(1)}%
               </span>
               <span class="text-sm text-gray-600">Pourcentage de participation</span>
             </div>
