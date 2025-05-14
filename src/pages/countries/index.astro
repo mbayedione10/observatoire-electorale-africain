@@ -299,11 +299,20 @@ const countriesWithLastElection = pays.map((country) => ({
               let matches = true;
               
               if (filters.region?.length > 0) {
-                matches = matches && filters.region.includes(country.region?.toLowerCase());
+                const normalizedRegion = country.region?.toLowerCase().replace("afrique ", "");
+                matches = matches && filters.region.some(r => normalizedRegion?.includes(r));
               }
               
               if (filters.electionType?.length > 0) {
-                matches = matches && filters.electionType.includes(country.lastElection?.type?.toLowerCase());
+                const normalizedType = country.lastElection?.type?.toLowerCase();
+                matches = matches && filters.electionType.some(t => {
+                  switch(t) {
+                    case 'presidential': return normalizedType === 'présidentielle';
+                    case 'legislative': return normalizedType === 'législative';
+                    case 'municipal': return normalizedType === 'municipale';
+                    default: return false;
+                  }
+                });
               }
               
               return matches;
