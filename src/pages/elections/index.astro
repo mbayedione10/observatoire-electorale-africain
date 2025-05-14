@@ -58,12 +58,21 @@ const electionTypeCounts = elections.reduce((acc, election) => {
   return acc;
 }, {} as Record<string, number>);
 
-const electionTypes = [
-  { type: "Présidentielle", count: electionTypeCounts["Présidentielle"] || 0, color: "bg-farafina-primary" },
-  { type: "Législative", count: electionTypeCounts["Législative"] || 0, color: "bg-farafina-secondary" },
-  { type: "Locales", count: electionTypeCounts["Locales"] || 0, color: "bg-farafina-accent" },
-  { type: "Référendum", count: electionTypeCounts["Référendum"] || 0, color: "bg-farafina-blue" }
-];
+const electionTypes = elections.map(election => {
+  const type = election.data.typeElection;
+  const colorMap = {
+    "Présidentielle": "bg-farafina-primary",
+    "Législative": "bg-farafina-secondary",
+    "Générale": "bg-farafina-accent",
+    "Referendum": "bg-farafina-blue"
+  };
+  const color = colorMap[type] || "bg-gray-200";
+  return {
+    type: type,
+    count: electionTypeCounts[type] || 0,
+    color: color
+  };
+});
 
 // Sélectionner un groupe aléatoire de défis électoraux
 const keyElectoralChallenges = defisElections
