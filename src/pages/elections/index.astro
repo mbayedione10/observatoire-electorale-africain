@@ -235,12 +235,10 @@ function getStatusColorClass(status: string) {
       <!-- Carte des élections -->
       <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
         <h2 class="text-2xl font-bold text-farafina-dark mb-6">Élections par région</h2>
-        <div class="flex items-center justify-center mb-6">
-          <img 
-            src="/images/africa-map.svg" 
-            alt="Carte de l'Afrique avec les élections" 
-            class="max-w-full h-auto rounded-lg"
-          />
+        <div class="h-[400px] mb-6">
+          <AfricaMap client:load selectedRegion={null} onRegionClick={(region) => {
+            console.log("Selected region:", region);
+          }} />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
           {electionsByRegion.map(region => (
