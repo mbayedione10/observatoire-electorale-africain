@@ -51,28 +51,17 @@ const electionsByRegion = [
 ];
 
 // Types d'élections
-// Compter les types d'élections
-const electionTypeCounts = elections.reduce((acc, election) => {
-  const type = election.data.typeElection;
-  acc[type] = (acc[type] || 0) + 1;
-  return acc;
-}, {} as Record<string, number>);
+const electionTypesConfig = [
+  { type: "Présidentielle", color: "bg-farafina-primary" },
+  { type: "Législative", color: "bg-farafina-secondary" },
+  { type: "Locales", color: "bg-farafina-accent" },
+  { type: "Référendum", color: "bg-farafina-blue" }
+];
 
-const electionTypes = elections.map(election => {
-  const type = election.data.typeElection;
-  const colorMap = {
-    "Présidentielle": "bg-farafina-primary",
-    "Législative": "bg-farafina-secondary",
-    "Générale": "bg-farafina-accent",
-    "Referendum": "bg-farafina-blue"
-  };
-  const color = colorMap[type] || "bg-gray-200";
-  return {
-    type: type,
-    count: electionTypeCounts[type] || 0,
-    color: color
-  };
-});
+const electionTypes = electionTypesConfig.map(config => ({
+  ...config,
+  count: elections.filter(election => election.data.typeElection === config.type).length
+}));
 
 // Sélectionner un groupe aléatoire de défis électoraux
 const keyElectoralChallenges = defisElections
