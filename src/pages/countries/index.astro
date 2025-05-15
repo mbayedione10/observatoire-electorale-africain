@@ -19,7 +19,7 @@ const totalRegistered = resultatsElections.reduce(
   (sum, resultat) => sum + (resultat.data?.electeur || 0),
   0,
 );
-console.log(totalRegistered);
+
 const totalPopulation = pays.reduce((sum, country) => sum + country.data.population, 0,);
 
 const totalVotes = resultatsElections.reduce(
