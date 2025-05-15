@@ -10,20 +10,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Rechercher...",
   onSearch 
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (onSearch) {
-      const searchTerms = query.toLowerCase().split(' ');
-      onSearch((content: string) => {
-        return searchTerms.every(term => 
-          content.toLowerCase().includes(term)
-        );
-      });
-    }
-  };
-
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
