@@ -23,7 +23,6 @@ import {
 } from "react-icons/fa";
 import { Image } from "astro:assets";
 import SearchBar from '../../components/common/SearchBar';
-import { useState } from 'react';
 
 export async function getStaticPaths() {
   const pays = await getCollection("pays");
@@ -316,7 +315,25 @@ const recentArticles = [
     <FaGlobeAfrica className="text-farafina-primary text-3xl" slot="icon" />
   </PageHeader>
 
-  <div data-pagefind-filter="section:Pays" class="container mx-auto px-4 py-8">
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <SearchBar
+        client:load
+        placeholder="Rechercher des informations..."
+        onSearch={(query) => {
+          const content = document.querySelector('.country-content');
+          if (content) {
+            const elements = content.querySelectorAll('p, h2, h3, h4, li');
+            elements.forEach(el => {
+              const text = el.textContent?.toLowerCase() || '';
+              const isMatch = text.includes(query.toLowerCase());
+              el.closest('div')?.classList.toggle('hidden', !isMatch && query !== '');
+            });
+          }
+        }}
+      />
+    </div>
+    <div class="country-content" data-pagefind-filter="section:Pays">
     <!-- Bannière du pays avec drapeau et statistiques clés -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
       <!-- <div
@@ -746,6 +763,7 @@ const recentArticles = [
           <div class="absolute inset-0 bg-black/20"></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </Layout>
