@@ -3,10 +3,10 @@ import Logo from '../ui/Logo.astro';
 
 // Définir les liens du footer
 const quickLinks = [
-  { label: 'Accueil', href: '/' },
+  // { label: 'Accueil', href: '/' },
   { label: 'Élections', href: '/elections' },
   { label: 'Pays', href: '/countries' },
-  { label: 'Organisations', href: '/organizations' },
+  { label: 'Acteurs clés', href: '/organizations' },
   { label: 'Ressources', href: '/resources' },
   { label: 'À Propos', href: '/about' }
 ];
@@ -31,19 +31,19 @@ const contactInfo = [
   { 
     type: 'address', 
     icon: 'map-marker', 
-    content: '123 Avenue de la Démocratie<br>Dakar, Sénégal' 
+    content: 'Dakar, Sénégal, BP 19968' 
   },
   { 
     type: 'phone', 
     icon: 'phone', 
-    content: '+221 12 345 6789', 
-    href: 'tel:+221123456789' 
+    content: '(+221) 33 837 51 24', 
+    href: 'tel:(+221) 33 837 51 24' 
   },
   { 
     type: 'email', 
     icon: 'envelope', 
-    content: 'contact@farafinawatch.org', 
-    href: 'mailto:contact@farafinawatch.org' 
+    content: 'info@africtivistes.org', 
+    href: 'mailto:info@africtivistes.org' 
   }
 ];
 
@@ -95,10 +95,19 @@ const getSocialIcon = (icon: string) => {
   <div class="container mx-auto px-4">
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
       <div>
-        <Logo variant="light" />
-        <p class="mt-4 text-gray-400 max-w-xs">
-          Une plateforme collaborative pour renforcer la transparence, l'intégrité et la participation démocratique
-          à travers l'Afrique.
+        <!-- <Logo variant="light" /> -->
+        <div class="h-8 w-full flex items-center mb-4">
+          <a href="https://ahead.africa/fr/">
+            <img src="/images/ahead_logo.png" alt="African Election Observers Network" class="max-h-full max-w-full object-contain" style="height: 50px;" />
+          </a>
+        </div>
+        <div class="h-12 w-full flex items-center mb-4">
+          <a href="https://european-union.europa.eu/index_fr">
+            <img src="/images/partenaires/eu-logo.png" alt="African Election Observers Network" class="max-h-full max-w-full object-contain" style="height: 50px;" />
+          </a>
+        </div>
+        <p class="mt-4 text-gray-400 max-w-xs text-justify">
+          Ce site web a été créé et mis à jour avec le soutien financier de l'Union européenne. Son contenu relève de la seule responsabilité de AfricTivistes et de ses partenaires et ne reflète pas nécessairement les opinions de l'Union européenne.
         </p>
         <div class="flex space-x-4 mt-6">
           {socialLinks.map((social) => (

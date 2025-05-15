@@ -13,13 +13,16 @@ export const paysData = [
   "système_politique",
   "modèle_gestion_élections",
   "Organe de validation des candidatures",
-  "Régime de vote presidentiel",
-  "Régime de vote legislative",
+  "Organe validation candidatures législatives",
+  "Présidentiel - Régime de vote",
+  "Legislative - Régime de vote",
   "Organe de proclamation des résultats provisoires",
   "Organe de gestion des contentieux électoraux",
-  "Organe de proclamation des resultats definitifs",
+  "Organe de proclamation des resultats definitifs Présidentiel",
+  "Organe proclamation resultats definitifs Législative",
   "Organes Gestion Electoraux",
   "Elections",
+  "Zone geographique",
   "Ressources",
   "Organisations",
 ];
@@ -29,34 +32,59 @@ export const electionsData = [
   "statut",
   "date_élection",
   "type_élection",
+  "nom_pays",
+  "zone",
+  "code_pays",
   "Pays_id",
   "Résultats Élections",
-  ];
-  
+];
+
 export const resultatsElectionsData = [
-      "Id",
-      "résultats",
-      "participation",
-      "source_résultats",
-      "Défis Electorals",
-      "Elections_id",
-    ];
+  "Id",
+  "résultats",
+  "participation",
+  "source_résultats",
+  "Défis Electorals",
+  "nom_pays",
+  "nombre_électeurs",
+  "Elections_id",
+];
 
 export const defisData = [
-      "Id",
-      "libellé defis",
-      "type_défi",
-      "source_defi",
-      "Résultats Élections_id",
-    ];
+  "Id",
+  "libellé defis",
+  "type_défi",
+  "source_defi",
+  "nom_pays",
+  "Résultats Élections_id",
+];
 
 export const organismesElectorauxData = [
-      "Id",
-      "nom",
-      "ville",
-      "annee de creation",
-      "siteweb",
-      "telephone",
-      "email",
-      "Pays_id",
-    ];
+  "Id",
+  "nom",
+  "ville",
+  "annee de creation",
+  "siteweb",
+  "telephone",
+  "email",
+  "Pays_id",
+];
+
+export const organisationsData = [
+  "Id",
+  "nom",
+  "zones couvertes",
+  "Statut",
+  "Type d’organisation -  institutions",
+  "nombre de pays couverts",
+  "ville",
+  "annee de creation",
+  "zones couvertes",
+  "domaines d'expertise",
+  "mobilisation observateurs",
+  "annee de creation",
+  "siteweb",
+  "telephone",
+  "email",
+  "nom_pays (from Pays)",
+];

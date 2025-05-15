@@ -1,7 +1,20 @@
 ---
 import Layout from '../layouts/MainLayout.astro';
 import AboutHero from '../components/about/AboutHero.astro';
-import { FaUsers, FaGlobeAfrica, FaChartBar, FaHandshake } from 'react-icons/fa';
+import { 
+  FaUsers, 
+  FaGlobeAfrica, 
+  FaChartBar, 
+  FaHandshake,
+  FaUserFriends,
+  FaUserCheck,
+  FaBuilding,
+  FaLandmark,
+  FaLaptopCode,
+  FaFlag,
+  FaVoteYea,
+  FaUsersCog
+} from 'react-icons/fa';
 
 const teamMembers = [
   {
@@ -33,23 +46,66 @@ const teamMembers = [
 const values = [
   {
     icon: FaGlobeAfrica,
-    title: "Transparence",
-    description: "Nous promouvons la transparence dans tous les processus électoraux pour renforcer la confiance des citoyens."
+    title: "Centralisation",
+    description: "Lutter contre la fragmentation de l'information électorale et faciliter leur accessibilité."
   },
   {
     icon: FaUsers,
-    title: "Inclusion",
-    description: "Nous défendons l'inclusion de tous les citoyens dans le processus démocratique, sans discrimination."
+    title: "Transparence informationnelle",
+    description: "Combattre la désinformation et le manque de transparence en période électorale."
   },
   {
     icon: FaChartBar,
-    title: "Rigueur",
-    description: "Nous nous engageons à fournir des analyses rigoureuses et factuelles sur les processus électoraux."
+    title: "Transparence démocratique",
+    description: "Soutenir la légitimité démocratique des élections en rendant visibles les pratiques, les engagements et les écarts dans la gouvernance électorale."
   },
   {
     icon: FaHandshake,
-    title: "Collaboration",
-    description: "Nous travaillons en partenariat avec les acteurs locaux, régionaux et internationaux pour maximiser notre impact."
+    title: "Intégrité",
+    description: "Contribuer à préserver l'intégrité électorale à l'échelle continentale."
+  }
+];
+
+const cible = [
+  {
+    icon: FaUsersCog,
+    title: "Organisations de la société civile",
+    description: "OSC nationales, régionales et continentales engagées dans l'observation électorale"
+  },
+  {
+    icon: FaUserCheck,
+    title: "Observateurs citoyens",
+    description: "Groupes ou citoyens observateurs des élections"
+  },
+  {
+    icon: FaBuilding,
+    title: "Autorités électorales",
+    description: "Institutions publiques en charge des élections"
+  },
+  {
+    icon: FaLandmark,
+    title: "Autorités publiques",
+    description: "Autorités nationales et locales"
+  },
+  {
+    icon: FaVoteYea,
+    title: "Élus locaux",
+    description: "Représentants élus au niveau local"
+  },
+  {
+    icon: FaLaptopCode,
+    title: "Initiatives civic tech",
+    description: "Organisations développant des solutions technologiques pour la démocratie"
+  },
+  {
+    icon: FaFlag,
+    title: "Union africaine",
+    description: "Décideurs au sein de l'UA et ses organes"
+  },
+  {
+    icon: FaUserFriends,
+    title: "Partis politiques",
+    description: "Organisations politiques et leurs représentants"
   }
 ];
 ---
@@ -60,46 +116,86 @@ const values = [
   <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center mb-12">
-        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Notre Histoire</h2>
-        <p class="text-lg text-gray-600">
-          Fondé en 2020, FarafinaWatch est né de la volonté de renforcer la démocratie en Afrique à travers 
-          l'observation électorale, l'analyse des données et le renforcement des capacités des acteurs locaux.
-        </p>
+        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Contexte</h2>
       </div>
       
-      <div class="grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <p class="text-gray-700 mb-4">
-            Notre observatoire a été créé par un consortium d'organisations de la société civile africaine, 
-            avec le soutien de partenaires internationaux engagés dans la promotion de la démocratie.
-          </p>
-          <p class="text-gray-700 mb-4">
-            Depuis sa création, FarafinaWatch a observé plus de 120 élections dans 35 pays africains, 
-            formé plus de 5000 observateurs locaux et publié des dizaines de rapports d'analyse.
-          </p>
-          <p class="text-gray-700">
-            Notre approche combine l'expertise locale, les technologies innovantes et les méthodologies 
-            rigoureuses pour fournir des analyses objectives et des recommandations pertinentes.
-          </p>
-        </div>
-        <div class="rounded-lg overflow-hidden shadow-lg">
-          <img 
-            src="/images/placeholder.svg?height=400&width=600" 
-            alt="Équipe de FarafinaWatch lors d'une mission d'observation" 
-            class="w-full h-auto"
-          />
+      <div class="max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-12 items-start">
+          <div class="space-y-6 text-justify">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+              <p class="text-gray-700 leading-relaxed">
+                Le continent africain traverse une période déterminante en matière de gouvernance démocratique et d'intégrité électorale. 
+                Les processus électoraux sont souvent entachés par un manque de transparence, une faible participation citoyenne, 
+                la prolifération de la désinformation et une mise en œuvre insuffisante des recommandations issues des missions d'observation. 
+                Ces défis fragilisent la légitimité des institutions et érodent la confiance des citoyens dans la démocratie.
+              </p>
+              <p class="text-gray-700 leading-relaxed mt-4">
+                Un autre défi majeur réside dans la dispersion, l'inaccessibilité et la faible actualisation des données électorales, 
+                qu'elles soient juridiques, techniques ou démographiques. Ces déficits constituent un frein à la participation éclairée 
+                des citoyens et de la société civile aux processus électoraux.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+              <h3 class="text-xl font-semibold text-farafina-dark mb-4">Notre Mission</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Dans ce contexte, la société civile et les observateurs indépendants doivent jouer un rôle avant-gardiste pour garantir 
+                des élections libres, transparentes et justes. Ainsi, dans sa composante 
+                <a href="https://africtivistes.com/quatre-prochaines-annees-dimpact-et-dinnovation-technologique-pour-la-democratie-et-lengagement-citoyen-en-afrique/" 
+                   class="text-blue-500 hover:text-blue-600 underline">Démocratie, Élections et Gouvernance</a>,  
+                AfricTivistes déploie <a href="http://farafina.tech" class="text-blue-500 hover:text-blue-600 underline">Farafina</a>, 
+                une plateforme numérique innovante dédiée aux élections et aux processus électoraux en Afrique.
+              </p>
+            </div>
+
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+              <h3 class="text-xl font-semibold text-farafina-dark mb-4">Notre Vision</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Le nom "Farafina" est un terme issu de plusieurs langues mandingues d'Afrique de l'Ouest, qui signifie littéralement 
+                <strong>"la terre des Noirs" ou "l'Afrique"</strong>. Ce mot porte une forte charge symbolique, renvoyant à une identité 
+                partagée, une histoire commune et une vision panafricaine enracinée dans les luttes pour la souveraineté, la justice 
+                et la dignité.
+              </p>
+              <p class="text-gray-700 leading-relaxed mt-4">
+                En l'adoptant, AfricTivistes affirme la vocation continentale de la plateforme, au service d'élections crédibles, 
+                de la participation citoyenne et de l'intégrité démocratique. Farafina incarne l'engagement d'une société civile 
+                forte, connectée et résolument tournée vers l'avenir démocratique du continent.
+              </p>
+            </div>
+          </div>
+
+          <div class="sticky top-4 space-y-6">
+            <div class="rounded-xl overflow-hidden shadow-lg">
+              <img 
+                src="/images/Farafina.png?height=400&width=600" 
+                alt="Équipe de FarafinaWatch lors d'une mission d'observation" 
+                class="w-full h-auto object-cover"
+              />
+            </div>
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+              <h3 class="text-xl font-semibold text-farafina-dark mb-4">Notre Impact</h3>
+              <p class="text-gray-700 leading-relaxed text-justify">
+                Farafina répertorie les données démographiques, organise les informations agrégées des systèmes électoraux, 
+                pilote une veille sur le cadre légal électoral des pays africains. Elle propose un système de visualisation 
+                de données complet incluant des fiches techniques par pays sur les codes et dispositions électoraux.
+              </p>
+              <p class="text-gray-700 leading-relaxed mt-4 text-justify">
+                L'initiative Farafina s'inscrit dans le projet panafricain AHEAD Africa, qui vise à améliorer l'intégrité 
+                électorale et à outiller la société civile pour renforcer les processus démocratiques. Elle est déployée 
+                en même temps qu'une cartographie des initiatives citoyennes électorales avec Sóobu Tech4Elections et d'un 
+                MOOC cours gratuits en ligne sur les élections.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
   
-  <section class="py-16 bg-gray-50">
+  <section class="py-16 bg-green-50">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center mb-12">
-        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Nos Valeurs</h2>
-        <p class="text-lg text-gray-600">
-          Les principes qui guident notre travail et notre engagement pour la démocratie en Afrique.
-        </p>
+        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Enjeux</h2>
       </div>
       
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -115,8 +211,39 @@ const values = [
       </div>
     </div>
   </section>
+
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Publics cibles</h2>
+        <p class="text-lg text-gray-600">
+          Les acteurs clés de la démocratie électorale en Afrique
+        </p>
+      </div>
+      
+      <div class="max-w-8xl mx-auto">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cible.map((item, index) => (
+            <div class="bg-white rounded-lg p-6 hover:shadow-lg transition-all duration-300 border-l-4 border-yellow-500">
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                  <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <item.icon className="text-yellow-500 text-xl" />
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-lg font-semibold text-farafina-dark mb-2">{item.title}</h3>
+                  <p class="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
   
-  <section class="py-16 bg-white">
+ <!-- <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <div class="max-w-3xl mx-auto text-center mb-12">
         <h2 class="text-3xl font-bold text-farafina-dark mb-4">Notre Équipe</h2>
@@ -142,6 +269,152 @@ const values = [
         ))}
       </div>
     </div>
+  </section> -->
+
+  <section class="py-16 bg-blue-50 text-justify">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Pays</h2>
+      
+      <!-- Main Countries Section -->
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-12 flex flex-row justify-center items-center">
+        <div class="text-left w-2/3 pr-8">
+          <h3 class="text-2xl font-semibold mb-6 text-farafina-dark text-center">Base de données sur les systèmes électoraux</h3>
+          <p class="text-gray-600 mb-8 text-justify ">
+            Explorez notre base de données exhaustive sur les systèmes électoraux des pays africains. Cette section vous offre une vue d'ensemble des données démographiques, du cadre légal, des institutions électorales et des particularités des processus démocratiques de chaque pays africain. Vous trouverez également des informations sur les dates clés, les acteurs impliqués et l'actualité des processus électoraux en cours, pour mieux comprendre les enjeux démocratiques de chaque scrutin.
+          </p>
+          <div class="text-center">
+            <a href="/countries" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 hover:scale-110 transition duration-300 ease-in-out">
+              Découvrez les pays
+            </a>
+          </div>
+        </div>
+
+        <div class="w-1/3 pl-8 hover:shadow-lg transition-shadow duration-300">
+          <a href="/countries">
+            <img src="/images/logoFarafina.png" alt="African Election Observers Network" class="w-50 h-auto object-cover rounded-lg" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Actualités Card -->
+        <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition duration-300">
+          <div class="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+            <h3 class="text-xl font-semibold">Actualités</h3>
+          </div>
+          <p class="text-gray-600">
+            Restez informé de l'actualité des activités de AfricTivistes et de ses partenaires dans le cadre du projet AHEAD Africa, ainsi que les évolutions significatives en matière de démocratie et de gouvernance sur le continent.
+          </p>
+        </div>
+
+        <!-- Elections Card -->
+        <div class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition duration-300">
+          <div class="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h3 class="text-xl font-semibold">Élections</h3>
+          </div>
+          <p class="text-gray-600">
+            Suivez en temps réel le calendrier électoral africain et accédez à des informations détaillées sur les élections à venir et en préparation ainsi que les défis des élections précédentes dans les pays du continent.
+          </p>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 text-center">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <h2 class="text-3xl font-bold text-farafina-dark mb-4">Nos Partenaires</h2>
+        <p class="text-lg text-gray-600">
+          Un réseau panafricain pour la démocratie
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto mb-16">
+        <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+          <div class="h-20 w-full flex items-center justify-center mb-4">
+            <img src="/images/partenaires/ahead-logo.svg" alt="African Election Observers Network" class="max-h-full max-w-full object-contain" />
+          </div>
+          <p class="text-gray-700 leading-relaxed mb-6 text-justify">
+            <a href="https://ahead.africa/en/" class="text-blue-500 hover:text-blue-600 font-medium">AHEAD Africa</a> est un projet panafricain axé sur les multiples facettes du cycle électoral visant à contribuer à l'amélioration de l'intégrité électorale dans les États membres de l'Union africaine. Il a pour objectif de donner à la société civile africaine, y compris aux observateurs citoyens, les moyens de renforcer les systèmes et processus électoraux, à travers le renforcement de capacités, la production de connaissances et le suivi, la collaboration et la mise en réseau, et le plaidoyer.
+          </p>
+          <p class="text-gray-700 leading-relaxed justify-center">
+            Ce projet, co-financé par l'Union européenne, est mis en oeuvre par un consortium constitué de réseaux d'observation électorale et de soutien à la démocratie.
+          </p>
+          <p></br></p>
+            <div class="h-10 w-full flex items-center justify-center mb-4">
+              <img src="/images/partenaires/eu-logo.png" alt="African Election Observers Network" class="max-h-full max-w-full object-contain" />
+            </div>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <a href="https://africtivistes.com/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-40 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/Africtivistes.svg" alt="AfricTivistes" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://democracy-reporting.org/en/office/global" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-40 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/dri.webp" alt="Democracy Reporting International" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://epd.eu/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-40 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/EPD.png" alt="European Partnership for Democracy" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://www.facebook.com/p/African-Election-Observers-Network-100082701128035/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-40 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/afeonet.png" alt="African Election Observers Network" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://www.facebook.com/SADC.ESN/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-50 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/esn-sa.png" alt="Electoral Support Network for Southern Africa" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://www.linkedin.com/company/e-horn/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-50 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/e-horn.png" alt="East and Horn of Africa Election Observers Network" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+
+          <a href="https://www.facebook.com/waeon/" target="_blank" class="group">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-center justify-center">
+              <div class="h-50 w-full flex items-center justify-center mb-4">
+                <img src="/images/partenaires/WAEON.png" alt="West African Election Observers Network" class="max-h-full max-w-full object-contain" />
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </Layout>
 

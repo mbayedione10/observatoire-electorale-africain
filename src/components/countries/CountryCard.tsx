@@ -2,23 +2,21 @@ import React from 'react';
 import { FaUsers, FaVoteYea, FaBalanceScale, FaChartBar } from 'react-icons/fa';
 
 interface CountryCardProps {
-  country: {
-    code: string;
-    name: string;
-    population: number;
-    lastElection: {
-      type: string;
-      year: number;
-      turnout: number;
-      nextElectionYear: number;
+  code: string;
+  name: string;
+  population: number;
+  politicalSystem ?: string;
+  demographics: {
+    voterRegistration: {
+      population: number;
+      registered: number;
     };
-    politicalSystem: string;
-    demographics?: {
-      voterRegistration?: {
-        registered: number;
-        population: number;
-      };
-    };
+  };
+  lastElection: {
+    turnout: number;
+    type ?: string;
+    date ?: string;
+    year ?: number;
   };
 }
 

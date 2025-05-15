@@ -1,14 +1,13 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/MainLayout.astro";
-import Breadcrumbs from "../../components/Breadcrumbs.tsx";
 import PageHeader from "../../components/PageHeader.tsx";
 import CountryCard from "../../components/countries/CountryCard.tsx";
 import DemographicChart from "../../components/countries/DemographicChart.tsx";
 import LegalFramework from "../../components/countries/LegalFramework.tsx";
 import ElectionTimeline from "../../components/countries/ElectionTimeline.tsx";
 import AfricaMap from "../../components/countries/AfricaMap.tsx";
-import countriesData from "../../data/countries-extended.json";
+import ToCountryLink from "@/components/common/ToCountryLink.astro";
 import {
   FaGlobeAfrica,
   FaVoteYea,
@@ -16,9 +15,13 @@ import {
   FaUsers,
   FaChartBar,
   FaCalendarAlt,
-  FaNewspaper,
   FaExclamationTriangle,
+  FaTwitter,
+  FaLinkedin,
+  FaFacebookF,
+  FaEnvelope,
 } from "react-icons/fa";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const pays = await getCollection("pays");
@@ -38,23 +41,55 @@ const elections = await getCollection("elections");
 const resultatsElections = await getCollection("resultatsElections");
 const defis = await getCollection("defisElections");
 const organismesElectoraux = await getCollection("organismesElectoraux");
+const organisations = await getCollection("organisations");
 
-const legalFramework3 = ressources.filter(
+const legalFramework3 = ressources?.filter(
   (ressource) => ressource.data.Pays_id === country.id,
 );
-const organismes = organismesElectoraux.filter(
+const organismes = organismesElectoraux?.filter(
   (organisme) => organisme.data.Pays_id === country.id,
 );
 
-const electionEvents3 = elections.filter(
-  (election) => election.data.Pays_id === country.id,
-);
+const electionEvents3 = elections
+  ?.filter((election) => election.data.Pays_id === country.id)
+  .sort((a, b) => {
+    const dateA = new Date(a.data.dateElection).getTime();
+    const dateB = new Date(b.data.dateElection).getTime();
+    return dateB - dateA;
+  });
+
+const organisation = organisations
+  .filter((organisation) => organisation.data.pays === country.name)
+  .map((organisation) => ({
+    nom: organisation.data.nom,
+    statut: organisation.data.statut,
+    typeOrganisation: organisation.data.typeOrganisation,
+    nombreDePaysCouverts: organisation.data.nombreDePaysCouverts,
+    ville: organisation.data.ville,
+    anneeDeCreation: organisation.data.anneeDeCreation,
+    zonesCouverts: organisation.data.zonesCouverts,
+    domainesExpertise: organisation.data.domainesExpertise,
+    mobilisationsObservateurs: organisation.data.mobilisationsObservateurs,
+    siteweb: organisation.data.siteweb,
+    telephone: organisation.data.telephone,
+    email: organisation.data.email,
+    pays: organisation.data.pays,
+  }));
 
 const electoralOrganism = {
   politicalSystem: country.politicalSystem,
   electoralModel: country.modele,
-  presidentialVote: country.presidentialVote,
-  legislativeVote: country.legislativeVote,
+  vote: {
+    presidentialVote: country.vote.presidentialVote,
+    presidentialResults: country.vote.presidentialResults,
+    legislativeVote: country.vote.legislativeVote,
+    legislativeResults: country.vote.legislativeResults,
+    validationBody: country.vote.validationBody,
+    legislativeValidationBody: country.vote.legislativeValidationBody,
+    disputesManagementBody: country.vote.disputesManagementBody,
+    provisionalResultsBody: country.vote.provisionalResultsBody,
+    type: "election-law" as const,
+  },
   electoralOrganisms: organismes.map((organisme) => ({
     name: organisme.data.nom,
     ville: organisme.data.ville,
@@ -68,7 +103,8 @@ const electoralOrganism = {
 const legalFramework = {
   documents: legalFramework3
     //.filter((r) => r.data.type === "Constitution" || r.data.type === "Loi Électorale")
-    .slice(0, 2) // Limiter à 2 éléments
+    .sort((a, b) => b.data.year - a.data.year)
+    .slice(0, 5) // Limiter à 4 éléments
     .map((r) => ({
       title: r.data.title,
       type: r.data.type,
@@ -76,7 +112,6 @@ const legalFramework = {
       description: r.data.description || "",
       url: r.data.fichier || "",
     })),
-
   timeline: [
     {
       year: parseInt(
@@ -96,11 +131,14 @@ const legalFramework = {
 
 // Sample election timeline data
 const electionEvents = electionEvents3.map((e) => {
-  const resultatsElections3 = resultatsElections.filter(
+  const resultatsElections3 = resultatsElections?.filter(
     (resultat) => resultat.data.Elections_id === e.data.id,
   );
-  const defisElection = defis.filter(
-    (defi) => defi.data.resultats === resultatsElections3[0]?.data.id,
+  const defisElection = defis?.filter(
+    (defi) =>
+      defi.data.resultats === resultatsElections3[0]?.data.id &&
+      e.data.statut === "Précédente" &&
+      e.data.id === country.id,
   );
   return {
     results:
@@ -112,8 +150,9 @@ const electionEvents = electionEvents3.map((e) => {
     status: e.data.statut,
     turnout:
       e.data.statut === "Précédente"
-        ? resultatsElections3[0].data.participation
+        ? resultatsElections3[0]?.data.participation
         : undefined,
+    vainqueur: resultatsElections3[0]?.data.resultats,
     description:
       e.data.statut === "Précédente"
         ? `Élection ${e.data.typeElection.toLowerCase()} ${country.name}`
@@ -151,6 +190,24 @@ const upcomingElections = [
   },
 ];
 
+const CountryInterface = {
+  code: country.code,
+  name: country.name,
+  population: country.population,
+  lastElection: {
+    type: electionEvents.find((e) => e.status === "Précédente")?.type || "N/A",
+    year: new Date(
+      electionEvents.find((e) => e.status === "Précédente")?.date || 0,
+    ).getFullYear(),
+    turnout:
+      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
+    nextElectionYear: upcomingElections[0]?.date
+      ? new Date(upcomingElections[0].date).getFullYear()
+      : 0,
+  },
+  politicalSystem: country.politicalSystem || "",
+  demographics: country.demographics,
+};
 // Données pour les statistiques clés
 const keyStats = [
   {
@@ -160,15 +217,7 @@ const keyStats = [
     color: "text-farafina-primary",
   },
   {
-    label: "Participation derniere élection",
-    value: new Intl.NumberFormat("fr-FR").format(
-      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
-    ),
-    icon: FaVoteYea,
-    color: "text-farafina-secondary",
-  },
-  {
-    label: "Électeurs inscrits",
+    label: "Électeurs Inscrits",
     value: new Intl.NumberFormat("fr-FR").format(
       country.demographics?.voterRegistration?.registered || 0,
     ),
@@ -176,12 +225,61 @@ const keyStats = [
     color: "text-farafina-accent",
   },
   {
+    label: "Dernière élection",
+    value: electionEvents.find((e) => e.status === "Précédente")?.date
+      ? `${electionEvents.find((e) => e.status === "Précédente")?.type} (${new Date(
+          electionEvents.find((e) => e.status === "Précédente")?.date || 0,
+        ).getFullYear()})`
+      : "N/A",
+    icon: FaCalendarAlt,
+    color: "text-farafina-secondary",
+  },
+  {
+    label: "Participation",
+    value: new Intl.NumberFormat("fr-FR").format(
+      electionEvents.find((e) => e.status === "Précédente")?.turnout || 0,
+    ),
+    icon: FaVoteYea,
+    color: "text-farafina-secondary",
+  },
+
+  {
     label: "Prochaine élection",
     value: upcomingElections[0]?.date
       ? new Date(upcomingElections[0].date).getFullYear()
       : "N/A",
     icon: FaCalendarAlt,
     color: "text-farafina-blue",
+  },
+];
+
+const socialLinks = [
+  {
+    name: "Twitter",
+    href: (code: string, name: string) =>
+      `https://twitter.com/share?url=https://farafina.tech/countries/${code}&text=Voir%20les%20informations%20%C3%A9lectorales%20de%20${name}`,
+    title: "Partager sur Twitter",
+    icon: FaTwitter,
+  },
+  {
+    name: "LinkedIn",
+    href: (code: string, name: string) =>
+      `https://www.linkedin.com/sharing/share-offsite/?url=https://farafina.tech/countries/${code}`,
+    title: "Partager sur LinkedIn",
+    icon: FaLinkedin,
+  },
+  {
+    href: (code: string, name: string) =>
+      `https://www.facebook.com/sharer/sharer.php?u=https://farafina.tech/countries/${code}`,
+    title: "Partager sur Facebook",
+    icon: FaFacebookF,
+  },
+  {
+    name: "Email",
+    href: (code: string, name: string) =>
+      `mailto:?subject=Voir%20les%20informations%20%C3%A9lectorales%20de%20${name}&body=https://farafina.tech/countries/${code}`,
+    title: "Partager par Email",
+    icon: FaEnvelope,
   },
 ];
 
@@ -213,15 +311,16 @@ const recentArticles = [
     ]}
     client:load
   >
-    <FaGlobeAfrica class="text-farafina-primary text-3xl" slot="icon" />
+    <FaGlobeAfrica className="text-farafina-primary text-3xl" slot="icon" />
   </PageHeader>
 
-  <div class="container mx-auto px-4 py-8">
+  <div data-pagefind-filter="section:Pays" class="container mx-auto px-4 py-8">
     <!-- Bannière du pays avec drapeau et statistiques clés -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-      <div
+      <!-- <div
         class="relative h-40 bg-gradient-to-r from-farafina-primary to-farafina-secondary"
-      >
+      > -->
+      <div class="relative h-40 bg-gradient-to-r from-[#00853F] to-[#E31B23]">
         <div
           class="absolute inset-0 opacity-20"
           style={`background-image: url(https://flagcdn.com/w1280/${country.code.toLowerCase()}.webp); background-size: cover; background-position: center;`}
@@ -235,19 +334,32 @@ const recentArticles = [
               class="w-24 h-16 object-cover rounded shadow-md mr-6"
             />
             <div class="text-white">
-              <h1 class="text-3xl font-bold">{country.name}</h1>
-              <p class="text-white/80">{country.politicalSystem}</p>
+              <h1 data-pagefind-index class="text-3xl font-bold">
+                {country.name}
+              </h1>
+              <p class="text-white/80">Langues officielles: {country.langue}</p>
             </div>
+          </div>
+          <div class="flex items-center space-x-2 ml-auto">
+            {
+              socialLinks.map((link) => (
+                <ToCountryLink
+                  href={link.href(country.code.toLowerCase(), country.name)}
+                  title={link.title}
+                  iconLink={link.icon}
+                />
+              ))
+            }
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 p-6">
         {
           keyStats.map((stat) => (
             <div class="flex items-center">
               <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
-                <stat.icon class={`text-xl ${stat.color}`} />
+                <stat.icon className={`text-xl ${stat.color}`} />
               </div>
               <div>
                 <span class="block text-sm text-gray-500">{stat.label}</span>
@@ -269,7 +381,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
           >
-            <FaGlobeAfrica class="mr-2" /> Localisation
+            <FaGlobeAfrica className="mr-2" /> Localisation
           </h2>
           <div class="h-[400px]">
             <AfricaMap client:load selectedCountry={country.code} />
@@ -297,33 +409,9 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
           >
-            <FaGlobeAfrica class="mr-2" /> Informations
+            <FaGlobeAfrica className="mr-2" /> Informations
           </h2>
-          <CountryCard
-            client:load
-            country={{
-              code: country.code,
-              name: country.name,
-              population: country.population,
-              lastElection: {
-                type:
-                  electionEvents.find((e) => e.status === "Précédente")?.type ||
-                  "N/A",
-                year: new Date(
-                  electionEvents.find((e) => e.status === "Précédente")?.date ||
-                    0,
-                ).getFullYear(),
-                turnout:
-                  electionEvents.find((e) => e.status === "Précédente")
-                    ?.turnout || 0,
-                nextElectionYear: upcomingElections[0]?.date
-                  ? new Date(upcomingElections[0].date).getFullYear()
-                  : 0,
-              },
-              politicalSystem: country.politicalSystem || "",
-              demographics: country.demographics,
-            }}
-          />
+          <CountryCard client:load country={CountryInterface} />
         </div>
 
         <!-- Élections à venir -->
@@ -331,7 +419,7 @@ const recentArticles = [
           <h2
             class="text-xl font-bold text-farafina-secondary mb-6 flex items-center"
           >
-            <FaCalendarAlt class="mr-2" /> Prochaine Élection
+            <FaCalendarAlt className="mr-2" /> Prochaine Élection
           </h2>
 
           {
@@ -376,7 +464,7 @@ const recentArticles = [
         </div>
 
         <!-- Articles récents -->
-        <div class="bg-white rounded-xl shadow-md p-6">
+        <!--div class="bg-white rounded-xl shadow-md p-6">
           <h2
             class="text-xl font-bold text-farafina-accent mb-6 flex items-center"
           >
@@ -405,7 +493,7 @@ const recentArticles = [
               Voir toutes les actualités →
             </a>
           </div>
-        </div>
+        </div-->
       </div>
     </div>
 
@@ -416,7 +504,7 @@ const recentArticles = [
         <h2
           class="text-xl font-bold text-farafina-primary mb-6 flex items-center"
         >
-          <FaVoteYea class="mr-2" /> Système Électoral
+          <FaVoteYea className="mr-2" /> Système Électoral
         </h2>
         <div class="space-y-6">
           <div class="bg-farafina-primary/5 rounded-lg p-4">
@@ -429,7 +517,7 @@ const recentArticles = [
           <div class="grid grid-cols-2 gap-6">
             <div class="bg-farafina-primary/5 rounded-lg p-4">
               <h3 class="font-semibold text-farafina-primary mb-2">
-                Modèle de gestion des élections
+                Modèle de Gestion des Élections
               </h3>
               <p class="text-gray-700">{electoralOrganism.electoralModel}</p>
             </div>
@@ -442,8 +530,8 @@ const recentArticles = [
                   electoralOrganism.electoralOrganisms.map((eo) => (
                     <li>
                       <a
-                        href={eo.siteweb}
-                        class="text-farafina-primary hover:underline"
+                        href={eo?.siteweb}
+                        class="text-blue-600 underline hover:no-underline"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -456,41 +544,96 @@ const recentArticles = [
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-6">
-            <div class="bg-farafina-primary/5 rounded-lg p-4">
-              <h3 class="font-semibold text-farafina-primary mb-2">
-                Régime de vote présidentiel
-              </h3>
-              <p class="text-gray-700">
-                {electoralOrganism.presidentialVote}
-              </p>
-            </div>
-            <div class="bg-farafina-primary/5 rounded-lg p-4">
-              <h3 class="font-semibold text-farafina-primary mb-2">
-                Régime de vote legislatif
-              </h3>
-              <p class="text-gray-700">{electoralOrganism.legislativeVote}</p>
-            </div>
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Régimes de vote
+            </h3>
+            <ul class="list-disc pl-4">
+              <li>
+                <span class="font-bold text-gray-700">Présidentiel</span>: {
+                  electoralOrganism.vote.presidentialVote
+                }
+              </li>
+              <li>
+                <span class="font-bold text-gray-700">Législatif</span>: {
+                  electoralOrganism.vote.legislativeVote
+                }
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Validation des candidatures
+            </h3>
+            <ul class="list-disc pl-4">
+              <li>
+                <span class="font-bold text-gray-700">Présidentiel</span>: {
+                  electoralOrganism.vote.validationBody
+                }
+              </li>
+              <li>
+                <span class="font-bold text-gray-700">Législatif</span>: {
+                  electoralOrganism.vote.legislativeValidationBody
+                }
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Organe de proclamation des résultats provisoires
+            </h3>
+            <p class="text-gray-700">
+              {electoralOrganism.vote.provisionalResultsBody}
+            </p>
+          </div>
+
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Organe de proclamation des résultats définitifs
+            </h3>
+            <ul class="list-disc pl-4">
+              <li>
+                <span class="font-bold text-gray-700">Présidentiel</span>: {
+                  electoralOrganism.vote.presidentialResults
+                }
+              </li>
+              <li>
+                <span class="font-bold text-gray-700">Législatif</span>: {
+                  electoralOrganism.vote.legislativeResults
+                }
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-farafina-primary/5 rounded-lg p-4">
+            <h3 class="font-semibold text-farafina-primary mb-2">
+              Gestion du contentieux électoral
+            </h3>
+            <p class="text-gray-700">
+              {electoralOrganism.vote.disputesManagementBody}
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- Cadre juridique -->
+      <!-- Ressources supplémentaires -->
       <div class="bg-white rounded-xl shadow-md p-6">
-        <h2
-          class="text-xl font-bold text-farafina-secondary mb-6 flex items-center"
-        >
-          <FaBalanceScale className="mr-2" /> Cadre Juridique
+        <h2 class="text-xl font-bold text-farafina-blue mb-6 flex items-center">
+          <FaBalanceScale className="mr-2" /> Ressources supplémentaires
         </h2>
         <LegalFramework
           client:visible
           documents={legalFramework?.documents || legalFramework.documents}
-          timeline={legalFramework?.timeline || legalFramework.timeline}
+          timeline={electoralOrganism?.vote || electoralOrganism.vote}
+          organisations={organisation}
+          electoralOrganism={electoralOrganism?.vote || electoralOrganism.vote}
         />
         <div class="mt-4">
           <a
             href="/resources"
-            class="text-farafina-secondary hover:text-farafina-secondary/80 transition-colors text-sm"
+            class="text-farafina-blue hover:text-farafina-secondary/80 transition-colors text-sm"
           >
             Voir toutes les ressources →
           </a>
@@ -501,7 +644,7 @@ const recentArticles = [
     <!-- Chronologie électorale -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-8">
       <h2 class="text-xl font-bold text-farafina-accent mb-6 flex items-center">
-        <FaCalendarAlt class="mr-2" /> Chronologie Électorale
+        <FaCalendarAlt className="mr-2" /> Chronologie Électorale
       </h2>
       <ElectionTimeline
         client:visible
@@ -512,37 +655,49 @@ const recentArticles = [
 
     <!-- Liste des défis électoraux -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 class="text-xl font-bold text-farafina-accent mb-6 flex items-center">
-        <FaExclamationTriangle className="mr-2" /> Defis de la derniere election
-      </h2>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-farafina-accent flex items-center">
+          <FaExclamationTriangle className="mr-2" /> Défis de la dernière élection
+        </h2>
+        <a
+          href="/elections/challenges"
+          class="text-farafina-accent hover:text-farafina-accent/80 transition-colors text-sm font-medium"
+        >
+          Voir tous les défis →
+        </a>
+      </div>
 
       <div class="space-y-6">
+        <div class="grid grid-cols-3 gap-6">
+          <div class="text-sm p-5 text-gray-500">
+            <h4>Type de défi</h4>
+          </div>
+          <div class="text-sm p-2 text-gray-500">
+            <h4>Description</h4>
+          </div>
+          <div class="text-sm text-gray-500"></div>
+        </div>
         {
           electionEvents.map((event) =>
             event.defis.map((challenge) => (
               <div
                 key={challenge.libelle}
-                class="border border-gray-100 rounded-lg p-5 hover:shadow-md transition-shadow"
+                class="border border-red-100 rounded-lg p-5 hover:shadow-md transition-shadow"
               >
-                <div class="flex flex-col md:flex-row md:items-center">
-                  <div class="md:w-1/4 mb-3 md:mb-0">
-                    <span class="text-sm text-gray-500">Type de défi</span>
-                    <p class="font-medium text-farafina-accent">
-                      {challenge.type}
-                    </p>
+                <div class="grid grid-cols-3 gap-6">
+                  <p class="font-medium text-farafina-accent">
+                    {challenge.type}
+                  </p>
+                  <p class="text-gray-700">{challenge.libelle}</p>
+                  <div class="flex justify-end">
+                    <a
+                      href={challenge.url}
+                      target="_blank"
+                      class="text-farafina-accent hover:text-farafina-accent/80 transition-colors"
+                    >
+                      Voir l'analyse complète →
+                    </a>
                   </div>
-                  <div class="md:w-2/4">
-                    <span class="text-sm text-gray-500">Description</span>
-                    <p class="text-gray-700">{challenge.libelle}</p>
-                  </div>
-                </div>
-                <div class="mt-2 pt-4 border-t border-gray-100 flex justify-end">
-                  <a
-                    href={challenge.url}
-                    class="text-farafina-accent hover:text-farafina-accent/80 transition-colors"
-                  >
-                    Voir l'analyse complète →
-                  </a>
                 </div>
               </div>
             )),
@@ -578,10 +733,13 @@ const recentArticles = [
           </div>
         </div>
         <div class="hidden md:block relative">
-          <img
-            src="/placeholder.svg?height=300&width=400"
+          <Image
+            src="/images/mapping.webp"
             alt={`Ressources sur ${country.name}`}
             class="w-full h-full object-cover"
+            width={400}
+            height={300}
+            inferSize
           />
           <div class="absolute inset-0 bg-black/20"></div>
         </div>
