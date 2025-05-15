@@ -5,10 +5,20 @@ import ElectionsHero from '../../components/elections/ElectionsHero.astro';
 import AfricaMap from '../../components/countries/AfricaMap.tsx';
 import { FaVoteYea, FaCalendarAlt, FaChartBar, FaExclamationTriangle, FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
 import { getCollection } from 'astro:content';
-import { useState } from 'react';
+import SearchBar from '../../components/common/SearchBar';
 
 // Récupérer les données des collections
 const elections = await getCollection('elections');
+
+// Client-side search function
+const searchElections = (query: string) => {
+  const cards = document.querySelectorAll('.election-card');
+  cards.forEach(card => {
+    const text = card.textContent?.toLowerCase() || '';
+    const matches = text.includes(query.toLowerCase());
+    card.closest('.election-wrapper')?.classList.toggle('hidden', !matches);
+  });
+};
 const resultatsElections = await getCollection('resultatsElections');
 const defisElections = await getCollection('defisElections');
 
@@ -109,7 +119,26 @@ function getStatusColorClass(status: string) {
 ---
 
 <Layout title="Élections | Observatoire des Élections en Afrique">
-  <ElectionsHero />
+  <section class="pt-28 pb-12 bg-gray-50 border-b border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-farafina-primary/10 rounded-full mb-4">
+          <FaVoteYea className="text-farafina-primary text-3xl" />
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-farafina-dark mb-4">Élections en Afrique</h1>
+        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          Consultez le calendrier électoral, les résultats et les analyses des élections à travers le continent africain.
+        </p>
+        <div class="max-w-2xl mx-auto">
+          <SearchBar 
+            client:load 
+            placeholder="Rechercher une élection..."
+            onSearch={(query) => searchElections(query)}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="container mx-auto px-4 py-12">
     <!-- Sections principales -->
@@ -129,7 +158,8 @@ function getStatusColorClass(status: string) {
           </p>
           <div class="space-y-4 mb-6">
             {upcomingElections.slice(0, 3).map(election => (
-              <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div class="election-wrapper">
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg election-card">
                 <div class="w-12 h-12 rounded-full bg-farafina-primary/20 flex items-center justify-center mr-3 flex-shrink-0">
                   <span class="font-bold text-farafina-primary">
                     {new Date(election.data.dateElection).getDate()}
