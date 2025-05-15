@@ -3,7 +3,6 @@
 import Layout from '../../layouts/MainLayout.astro';
 import ElectionsHero from '../../components/elections/ElectionsHero.astro';
 import AfricaMap from '../../components/countries/AfricaMap.tsx';
-
 import { FaVoteYea, FaCalendarAlt, FaChartBar, FaExclamationTriangle, FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
 import { getCollection } from 'astro:content';
 import { useState } from 'react';
@@ -311,15 +310,15 @@ function getStatusColorClass(status: string) {
     <div class="bg-gradient-to-r from-farafina-primary to-farafina-secondary rounded-xl shadow-md overflow-hidden">
       <div class="grid grid-cols-1 md:grid-cols-2">
         <div class="p-8 text-white">
-          <h2 class="text-2xl font-bold mb-4">Participez à l'observation électorale</h2>
+          <h2 class="text-2xl font-bold mb-4">Découvrez les acteurs clés du processus électoral</h2>
           <p class="mb-6 text-white/90">
-            Rejoignez notre réseau d'observateurs et contribuez à la transparence des processus électoraux en Afrique.
+            Plongez au cœur des initiatives citoyennes en explorant les profils de celles et ceux qui façonnent la transparence et l’intégrité des élections en Afrique.
           </p>
           <a 
-            href="/participate" 
+            href="/organizations" 
             class="inline-block px-6 py-3 bg-white text-farafina-primary font-medium rounded-lg hover:bg-white/90 transition-colors"
           >
-            Devenir observateur
+           Voir la liste des acteurs clés
           </a>
         </div>
         <div class="hidden md:block relative">
