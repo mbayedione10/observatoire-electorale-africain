@@ -5,6 +5,7 @@ import CountrySidebar from "../../components/countries/CountrySidebar";
 import AfricaMap from "../../components/countries/AfricaMap";
 import { FaGlobeAfrica, FaVoteYea, FaUsers, FaSearch } from "react-icons/fa";
 import CountriesHero from "@/components/countries/CountriesHero.astro";
+import SearchBar from '../../components/common/SearchBar';
 
 import { getCollection } from "astro:content";
 
@@ -274,6 +275,20 @@ const countriesWithLastElection = pays.map((country) => ({
         <CountrySidebar client:load />
       </div>
       <div class="lg:w-3/4">
+       <div class="max-w-2xl mx-auto mb-8">
+          <SearchBar 
+            client:load
+            placeholder="Rechercher un pays..."
+            onSearch={(query) => {
+              const cards = document.querySelectorAll('.country-card');
+              cards.forEach(card => {
+                const text = card.textContent?.toLowerCase() || '';
+                const matches = text.includes(query.toLowerCase());
+                card.classList.toggle('hidden', !matches);
+              });
+            }}
+          />
+        </div>
         <CountryList
           countries={countriesWithLastElection.map((country) => ({
             ...country,
