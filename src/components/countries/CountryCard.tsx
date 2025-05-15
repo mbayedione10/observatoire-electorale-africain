@@ -31,7 +31,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
     : null;
 
   return (
-    <div className="country-card bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
       <div className="relative h-32 bg-gray-100">
         <img
           src={flagUrl}
